@@ -1,0 +1,24 @@
+#///////////////////////////
+# Cocos Creator 3D Project
+#///////////////////////////
+library/
+temp/
+local/
+build/
+profiles/
+native
+#//////////////////////////
+# NPM
+#//////////////////////////
+node_modules/
+
+#//////////////////////////
+# WebStorm
+#//////////////////////////
+.idea/
+
+# misc
+package-lock.json
+npm-debug.log
+yarn-error.log
+lerna-debug.log
