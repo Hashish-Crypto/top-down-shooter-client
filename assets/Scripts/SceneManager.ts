@@ -23,6 +23,7 @@ export class SceneManager extends Component {
   private _playerController: PlayerController | null = null
   private _isMoving: boolean = false
   private _currentKeyPressed: number | null = null
+  private _moveCommands: string[] = []
 
   onLoad() {
     this._playerController = this.player.getComponent(PlayerController)
@@ -41,44 +42,64 @@ export class SceneManager extends Component {
   }
 
   onKeyDown(event: EventKeyboard) {
-    if (event.keyCode === KeyCode.KEY_W && !this._isMoving) {
-      this._playerController.moveUp()
-      this._isMoving = true
-      this._currentKeyPressed = event.keyCode
+    if (event.keyCode === KeyCode.KEY_W && !this._moveCommands.includes('w')) {
+      this._moveCommands.push('w')
+      this.movePlayer()
+    } else if (event.keyCode === KeyCode.KEY_D && !this._moveCommands.includes('d')) {
+      this._moveCommands.push('d')
+      this.movePlayer()
+    } else if (event.keyCode === KeyCode.KEY_S && !this._moveCommands.includes('s')) {
+      this._moveCommands.push('s')
+      this.movePlayer()
+    } else if (event.keyCode === KeyCode.KEY_A && !this._moveCommands.includes('a')) {
+      this._moveCommands.push('a')
+      this.movePlayer()
     }
-    if (event.keyCode === KeyCode.KEY_D && !this._isMoving) {
-      this._playerController.moveRight()
-      this._isMoving = true
-      this._currentKeyPressed = event.keyCode
-    }
-    if (event.keyCode === KeyCode.KEY_S && !this._isMoving) {
-      this._playerController.moveDown()
-      this._isMoving = true
-      this._currentKeyPressed = event.keyCode
-    }
-    if (event.keyCode === KeyCode.KEY_A && !this._isMoving) {
-      this._playerController.moveLeft()
-      this._isMoving = true
-      this._currentKeyPressed = event.keyCode
-    }
+
+    console.log(this._moveCommands)
   }
 
   onKeyUp(event: EventKeyboard) {
-    if (event.keyCode === KeyCode.KEY_W && this._isMoving && this._currentKeyPressed === event.keyCode) {
-      this._playerController.idleUp()
-      this._isMoving = false
+    if (event.keyCode === KeyCode.KEY_W) {
+      this._moveCommands = this.removeItem(this._moveCommands, 'w')
+      if (this._moveCommands.length === 0) {
+        this._playerController.idleUp()
+      }
+    } else if (event.keyCode === KeyCode.KEY_D) {
+      this._moveCommands = this.removeItem(this._moveCommands, 'd')
+      if (this._moveCommands.length === 0) {
+        this._playerController.idleRight()
+      }
+    } else if (event.keyCode === KeyCode.KEY_S) {
+      this._moveCommands = this.removeItem(this._moveCommands, 's')
+      if (this._moveCommands.length === 0) {
+        this._playerController.idleDown()
+      }
+    } else if (event.keyCode === KeyCode.KEY_A) {
+      this._moveCommands = this.removeItem(this._moveCommands, 'a')
+      if (this._moveCommands.length === 0) {
+        this._playerController.idleLeft()
+      }
     }
-    if (event.keyCode === KeyCode.KEY_D && this._isMoving && this._currentKeyPressed === event.keyCode) {
-      this._playerController.idleRight()
-      this._isMoving = false
+
+    this.movePlayer()
+  }
+
+  movePlayer() {
+    if (this._moveCommands.length === 1) {
+      if (this._moveCommands[0] === 'w') {
+        this._playerController.moveUp()
+      } else if (this._moveCommands[0] === 'd') {
+        this._playerController.moveRight()
+      } else if (this._moveCommands[0] === 's') {
+        this._playerController.moveDown()
+      } else if (this._moveCommands[0] === 'a') {
+        this._playerController.moveLeft()
+      }
     }
-    if (event.keyCode === KeyCode.KEY_S && this._isMoving && this._currentKeyPressed === event.keyCode) {
-      this._playerController.idleDown()
-      this._isMoving = false
-    }
-    if (event.keyCode === KeyCode.KEY_A && this._isMoving && this._currentKeyPressed === event.keyCode) {
-      this._playerController.idleLeft()
-      this._isMoving = false
-    }
+  }
+
+  removeItem(arr: string[], value: string) {
+    return arr.filter((element) => element !== value)
   }
 }

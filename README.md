@@ -8,8 +8,8 @@ Top-down shooter demonstration project using [Colyseus 0.14.0](https://www.colys
 ```
 git clone https://github.com/Hashish-Crypto/top-down-shooter-server.git
 cd top-down-shooter-server
-npm install
-npm start
+yarn install
+yarn start
 ```
 
 ## Running the client locally
