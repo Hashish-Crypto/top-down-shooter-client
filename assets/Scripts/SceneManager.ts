@@ -21,9 +21,8 @@ export class SceneManager extends Component {
   public player: Node | null = null
 
   private _playerController: PlayerController | null = null
-  private _isMoving: boolean = false
-  private _currentKeyPressed: number | null = null
   private _moveCommands: string[] = []
+  private _lastKeyDownMoveCommand: string
 
   onLoad() {
     this._playerController = this.player.getComponent(PlayerController)
@@ -43,20 +42,22 @@ export class SceneManager extends Component {
 
   onKeyDown(event: EventKeyboard) {
     if (event.keyCode === KeyCode.KEY_W && !this._moveCommands.includes('w')) {
+      this._lastKeyDownMoveCommand = 'w'
       this._moveCommands.push('w')
       this.movePlayer()
     } else if (event.keyCode === KeyCode.KEY_D && !this._moveCommands.includes('d')) {
+      this._lastKeyDownMoveCommand = 'd'
       this._moveCommands.push('d')
       this.movePlayer()
     } else if (event.keyCode === KeyCode.KEY_S && !this._moveCommands.includes('s')) {
+      this._lastKeyDownMoveCommand = 's'
       this._moveCommands.push('s')
       this.movePlayer()
     } else if (event.keyCode === KeyCode.KEY_A && !this._moveCommands.includes('a')) {
+      this._lastKeyDownMoveCommand = 'a'
       this._moveCommands.push('a')
       this.movePlayer()
     }
-
-    console.log(this._moveCommands)
   }
 
   onKeyUp(event: EventKeyboard) {
@@ -82,18 +83,20 @@ export class SceneManager extends Component {
       }
     }
 
-    this.movePlayer()
+    if (this._lastKeyDownMoveCommand !== this._moveCommands[this._moveCommands.length - 1]) {
+      this.movePlayer()
+    }
   }
 
   movePlayer() {
-    if (this._moveCommands.length === 1) {
-      if (this._moveCommands[0] === 'w') {
+    if (this._moveCommands.length >= 1) {
+      if (this._moveCommands[this._moveCommands.length - 1] === 'w') {
         this._playerController.moveUp()
-      } else if (this._moveCommands[0] === 'd') {
+      } else if (this._moveCommands[this._moveCommands.length - 1] === 'd') {
         this._playerController.moveRight()
-      } else if (this._moveCommands[0] === 's') {
+      } else if (this._moveCommands[this._moveCommands.length - 1] === 's') {
         this._playerController.moveDown()
-      } else if (this._moveCommands[0] === 'a') {
+      } else if (this._moveCommands[this._moveCommands.length - 1] === 'a') {
         this._playerController.moveLeft()
       }
     }
