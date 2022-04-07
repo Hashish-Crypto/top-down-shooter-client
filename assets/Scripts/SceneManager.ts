@@ -1,4 +1,5 @@
 import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode } from 'cc'
+import Colyseus from 'db://colyseus-sdk/colyseus.js'
 import { PlayerController } from './PlayerController'
 
 const { ccclass, property } = _decorator
@@ -17,27 +18,69 @@ const { ccclass, property } = _decorator
 
 @ccclass('SceneManager')
 export class SceneManager extends Component {
+  @property
+  private serverURL: string = 'localhost'
+
+  @property
+  private port: string = '2567'
+
   @property({ type: Node })
   public player: Node | null = null
 
+  private _client: Colyseus.Client | null = null
+  private _room: Colyseus.Room | null = null
   private _playerController: PlayerController | null = null
   private _moveCommands: string[] = []
   private _lastKeyDownMoveCommand: string
 
   onLoad() {
+    const endpoint: string = `ws://${this.serverURL}:${this.port}`
+    this._client = new Colyseus.Client(endpoint)
+
     this._playerController = this.player.getComponent(PlayerController)
 
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     input.on(Input.EventType.KEY_UP, this.onKeyUp, this)
   }
 
-  start() {}
+  start() {
+    this.connect()
+  }
 
   update(deltaTime: number) {}
 
   onDestroy() {
     input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     input.off(Input.EventType.KEY_UP, this.onKeyUp, this)
+  }
+
+  async connect() {
+    console.log('Joining game...')
+    try {
+      this._room = await this._client.joinOrCreate('moonBase')
+    } catch (err) {
+      console.log('Client can not join or create moonBase room: ', err)
+    }
+
+    this._room.onMessage('serverMovePlayer', (message) => {
+      if (message === 'moveUp') {
+        this._playerController.moveUp()
+      } else if (message === 'moveRight') {
+        this._playerController.moveRight()
+      } else if (message === 'moveDown') {
+        this._playerController.moveDown()
+      } else if (message === 'moveLeft') {
+        this._playerController.moveLeft()
+      } else if (message === 'idleUp') {
+        this._playerController.idleUp()
+      } else if (message === 'idleRight') {
+        this._playerController.idleRight()
+      } else if (message === 'idleDown') {
+        this._playerController.idleDown()
+      } else if (message === 'idleLeft') {
+        this._playerController.idleLeft()
+      }
+    })
   }
 
   onKeyDown(event: EventKeyboard) {
@@ -64,22 +107,22 @@ export class SceneManager extends Component {
     if (event.keyCode === KeyCode.KEY_W) {
       this._moveCommands = this.removeItem(this._moveCommands, 'w')
       if (this._moveCommands.length === 0) {
-        this._playerController.idleUp()
+        this._room.send('clientMovePlayer', 'idleUp')
       }
     } else if (event.keyCode === KeyCode.KEY_D) {
       this._moveCommands = this.removeItem(this._moveCommands, 'd')
       if (this._moveCommands.length === 0) {
-        this._playerController.idleRight()
+        this._room.send('clientMovePlayer', 'idleRight')
       }
     } else if (event.keyCode === KeyCode.KEY_S) {
       this._moveCommands = this.removeItem(this._moveCommands, 's')
       if (this._moveCommands.length === 0) {
-        this._playerController.idleDown()
+        this._room.send('clientMovePlayer', 'idleDown')
       }
     } else if (event.keyCode === KeyCode.KEY_A) {
       this._moveCommands = this.removeItem(this._moveCommands, 'a')
       if (this._moveCommands.length === 0) {
-        this._playerController.idleLeft()
+        this._room.send('clientMovePlayer', 'idleLeft')
       }
     }
 
@@ -91,13 +134,13 @@ export class SceneManager extends Component {
   movePlayer() {
     if (this._moveCommands.length >= 1) {
       if (this._moveCommands[this._moveCommands.length - 1] === 'w') {
-        this._playerController.moveUp()
+        this._room.send('clientMovePlayer', 'moveUp')
       } else if (this._moveCommands[this._moveCommands.length - 1] === 'd') {
-        this._playerController.moveRight()
+        this._room.send('clientMovePlayer', 'moveRight')
       } else if (this._moveCommands[this._moveCommands.length - 1] === 's') {
-        this._playerController.moveDown()
+        this._room.send('clientMovePlayer', 'moveDown')
       } else if (this._moveCommands[this._moveCommands.length - 1] === 'a') {
-        this._playerController.moveLeft()
+        this._room.send('clientMovePlayer', 'moveLeft')
       }
     }
   }

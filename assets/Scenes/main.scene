@@ -82,6 +82,8 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "serverURL": "localhost",
+    "port": "2567",
     "player": {
       "__id__": 4
     },
