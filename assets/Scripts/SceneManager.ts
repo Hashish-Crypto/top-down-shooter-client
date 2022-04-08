@@ -25,8 +25,18 @@ export class SceneManager extends Component {
   private port: string = '2567'
 
   @property({ type: Node })
-  public player: Node | null = null
+  public lobbyNode: Node | null = null
 
+  @property({ type: Node })
+  public joinGameButton: Node | null = null
+
+  @property({ type: Node })
+  public gameNode: Node | null = null
+
+  @property({ type: Node })
+  public playerNode: Node | null = null
+
+  private _gameState: string = 'LOBBY'
   private _client: Colyseus.Client | null = null
   private _room: Colyseus.Room | null = null
   private _playerController: PlayerController | null = null
@@ -36,22 +46,39 @@ export class SceneManager extends Component {
   onLoad() {
     const endpoint: string = `ws://${this.serverURL}:${this.port}`
     this._client = new Colyseus.Client(endpoint)
+    this._playerController = this.playerNode.getComponent(PlayerController)
 
-    this._playerController = this.player.getComponent(PlayerController)
-
-    input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
-    input.on(Input.EventType.KEY_UP, this.onKeyUp, this)
+    this.resetGame()
   }
 
-  start() {
-    this.connect()
+  onEnable() {
+    this.joinGameButton.on(Input.EventType.MOUSE_DOWN, this.joinGame, this)
   }
 
   update(deltaTime: number) {}
 
-  onDestroy() {
+  onDisable() {
+    this.joinGameButton.off(Input.EventType.MOUSE_DOWN, this.joinGame, this)
     input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     input.off(Input.EventType.KEY_UP, this.onKeyUp, this)
+  }
+
+  resetGame() {
+    this._gameState = 'LOBBY'
+    this.handleGameState()
+  }
+
+  handleGameState() {
+    this.lobbyNode.active = this._gameState === 'LOBBY'
+    this.gameNode.active = this._gameState === 'GAME'
+  }
+
+  joinGame() {
+    this._gameState = 'GAME'
+    this.handleGameState()
+    this.connect()
+    input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
+    input.on(Input.EventType.KEY_UP, this.onKeyUp, this)
   }
 
   async connect() {
@@ -59,7 +86,7 @@ export class SceneManager extends Component {
     try {
       this._room = await this._client.joinOrCreate('moonBase')
     } catch (err) {
-      console.log('Client can not join or create moonBase room: ', err)
+      console.log('Client can not join or create moonBase room.', err)
     }
 
     this._room.onMessage('serverMovePlayer', (message) => {

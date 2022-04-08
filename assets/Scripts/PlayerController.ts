@@ -1,5 +1,4 @@
 import { _decorator, Component, RigidBody2D, Vec2, CCFloat, Animation } from 'cc'
-// import { GameManager } from './GameManager'
 
 const { ccclass, property } = _decorator
 
@@ -17,9 +16,6 @@ const { ccclass, property } = _decorator
 
 @ccclass('PlayerController')
 export class PlayerController extends Component {
-  // @property({ type: Node })
-  // public gameManager: Node | null = null
-
   @property({ type: CCFloat })
   public velocity: number = 4
 
