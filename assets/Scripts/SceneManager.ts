@@ -79,22 +79,32 @@ export class SceneManager extends Component {
   joinGame() {
     this._gameState = 'GAME'
     this.handleGameState()
-    for (let i = 0; i < this._players.length; i++) {
-      this._players[i] = instantiate(this.playerPrefab)
-      this.playersRef.addChild(this._players[i])
-      this._playerController = this._players[i].getComponent(PlayerController)
-    }
     this.connect()
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     input.on(Input.EventType.KEY_UP, this.onKeyUp, this)
   }
 
   async connect() {
-    console.log('Joining game...')
     try {
       this._room = await this._client.joinOrCreate('moonBase')
     } catch (err) {
       console.log('Client can not join or create moonBase room.', err)
+    }
+
+    setTimeout(() => {
+      this._room.state.players.forEach((value: any, key: any) => {
+        console.log('key =>', key)
+        console.log('value =>', value)
+      })
+      console.log(this._room.sessionId)
+      console.log(this._room.state.players.get(this._room.sessionId))
+      console.log(this._room.state.players.toJSON())
+    }, 10)
+
+    for (let i = 0; i < this._players.length; i++) {
+      this._players[i] = instantiate(this.playerPrefab)
+      this.playersRef.addChild(this._players[i])
+      this._playerController = this._players[i].getComponent(PlayerController)
     }
 
     this._room.onMessage('serverMovePlayer', (message) => {
