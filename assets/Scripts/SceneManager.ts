@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode } from 'cc'
+import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode, Prefab, instantiate } from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
 import { PlayerController } from './PlayerController'
 
@@ -25,20 +25,24 @@ export class SceneManager extends Component {
   private port: string = '2567'
 
   @property({ type: Node })
-  public lobbyNode: Node | null = null
+  private lobbyNode: Node | null = null
 
   @property({ type: Node })
-  public joinGameButton: Node | null = null
+  private joinGameButton: Node | null = null
 
   @property({ type: Node })
-  public gameNode: Node | null = null
+  private gameNode: Node | null = null
 
   @property({ type: Node })
-  public playerNode: Node | null = null
+  private playersRef: Node | null = null
+
+  @property({ type: Prefab })
+  public playerPrefab: Prefab | null = null
 
   private _gameState: string = 'LOBBY'
   private _client: Colyseus.Client | null = null
   private _room: Colyseus.Room | null = null
+  private _players: Node[] = [null]
   private _playerController: PlayerController | null = null
   private _moveCommands: string[] = []
   private _lastKeyDownMoveCommand: string
@@ -46,7 +50,6 @@ export class SceneManager extends Component {
   onLoad() {
     const endpoint: string = `ws://${this.serverURL}:${this.port}`
     this._client = new Colyseus.Client(endpoint)
-    this._playerController = this.playerNode.getComponent(PlayerController)
 
     this.resetGame()
   }
@@ -76,6 +79,11 @@ export class SceneManager extends Component {
   joinGame() {
     this._gameState = 'GAME'
     this.handleGameState()
+    for (let i = 0; i < this._players.length; i++) {
+      this._players[i] = instantiate(this.playerPrefab)
+      this.playersRef.addChild(this._players[i])
+      this._playerController = this._players[i].getComponent(PlayerController)
+    }
     this.connect()
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     input.on(Input.EventType.KEY_UP, this.onKeyUp, this)

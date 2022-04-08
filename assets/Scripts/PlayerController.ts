@@ -17,7 +17,7 @@ const { ccclass, property } = _decorator
 @ccclass('PlayerController')
 export class PlayerController extends Component {
   @property({ type: CCFloat })
-  public velocity: number = 4
+  private velocity: number = 4
 
   private _body: RigidBody2D | null = null
   private _animation: Animation | null = null
