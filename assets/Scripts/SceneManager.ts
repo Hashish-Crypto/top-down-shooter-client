@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode, Prefab, instantiate } from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
 import { PlayerController } from './PlayerController'
+import { State } from './rooms/schema/State'
 
 const { ccclass, property } = _decorator
 
@@ -41,7 +42,7 @@ export class SceneManager extends Component {
 
   private _gameState: string = 'LOBBY'
   private _client: Colyseus.Client | null = null
-  private _room: Colyseus.Room | null = null
+  private _room: Colyseus.Room<State> | null = null
   private _players: Node[] = [null]
   private _playerController: PlayerController | null = null
   private _moveCommands: string[] = []
@@ -97,7 +98,7 @@ export class SceneManager extends Component {
         console.log('value =>', value)
       })
       console.log(this._room.sessionId)
-      console.log(this._room.state.players.get(this._room.sessionId))
+      console.log(this._room.state.players.get(this._room.sessionId).xPos)
       console.log(this._room.state.players.toJSON())
     }, 10)
 
