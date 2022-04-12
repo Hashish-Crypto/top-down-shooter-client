@@ -1,9 +1,15 @@
 import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode, Prefab, instantiate } from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
 import { PlayerController } from './PlayerController'
-import { State } from './rooms/schema/State'
+import type { State } from './rooms/schema/Internal'
 
 const { ccclass, property } = _decorator
+
+interface IPlayer {
+  id: string
+  node: Node
+  playerController?: PlayerController
+}
 
 /**
  * Predefined variables
@@ -43,7 +49,7 @@ export class SceneManager extends Component {
   private _gameState: string = 'LOBBY'
   private _client: Colyseus.Client | null = null
   private _room: Colyseus.Room<State> | null = null
-  private _players: Node[] = [null]
+  private _players: IPlayer[] = []
   private _playerController: PlayerController | null = null
   private _moveCommands: string[] = []
   private _lastKeyDownMoveCommand: string
@@ -93,19 +99,36 @@ export class SceneManager extends Component {
     }
 
     setTimeout(() => {
-      this._room.state.players.forEach((value: any, key: any) => {
-        console.log('key =>', key)
-        console.log('value =>', value)
+      this._room.state.players.forEach((serverPlayer) => {
+        this._players.push({
+          id: serverPlayer.id,
+          node: instantiate(this.playerPrefab),
+        })
+        const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
+        clientPlayer.playerController = clientPlayer.node.getComponent(PlayerController)
+        this._playerController = clientPlayer.node.getComponent(PlayerController)
+        this.playersRef.addChild(clientPlayer.node)
       })
-      console.log(this._room.sessionId)
-      console.log(this._room.state.players.get(this._room.sessionId).xPos)
-      console.log(this._room.state.players.toJSON())
     }, 10)
 
-    for (let i = 0; i < this._players.length; i++) {
-      this._players[i] = instantiate(this.playerPrefab)
-      this.playersRef.addChild(this._players[i])
-      this._playerController = this._players[i].getComponent(PlayerController)
+    // setTimeout(() => {
+    //   this._room.state.players.forEach((value: any, key: any) => {
+    //     console.log('key =>', key)
+    //     console.log('value =>', value)
+    //   })
+    //   console.log(this._room.sessionId)
+    //   console.log(this._room.state.players.get(this._room.sessionId).xPos)
+    //   console.log(this._room.state.players.toJSON())
+    // }, 10)
+
+    this._room.state.players.onAdd = (serverPlayer) => {
+      this._players.push({
+        id: serverPlayer.id,
+        node: instantiate(this.playerPrefab),
+      })
+      const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
+      clientPlayer.playerController = clientPlayer.node.getComponent(PlayerController)
+      this.playersRef.addChild(clientPlayer.node)
     }
 
     this._room.onMessage('serverMovePlayer', (message) => {

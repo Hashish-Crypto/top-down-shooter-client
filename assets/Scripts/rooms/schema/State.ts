@@ -1,7 +1,5 @@
-import { type, Schema, MapSchema } from '@colyseus/schema'
-import { Player } from './Player'
+import { Player, Schema, MapSchema } from './Internal'
 
-export class State extends Schema {
-  @type({ map: Player })
-  players = new MapSchema<Player>()
+export interface State extends Schema {
+  players: MapSchema<Player>
 }

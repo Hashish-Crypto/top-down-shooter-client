@@ -1,7 +1,7 @@
-import { type, Schema } from '@colyseus/schema'
+import { Schema } from './Internal'
 
-export class Player extends Schema {
-  @type('string') id: string
-  @type('number') xPos: number
-  @type('number') yPos: number
+export interface Player extends Schema {
+  id: string
+  xPos: number
+  yPos: number
 }
