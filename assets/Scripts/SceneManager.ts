@@ -116,6 +116,7 @@ export class SceneManager extends Component {
         node: instantiate(this.playerPrefab),
       })
       const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
+      clientPlayer.node.position.set(serverPlayer.xPos, serverPlayer.yPos)
       if (clientPlayer.id === this._room.sessionId) {
         resources.load('Prefabs/Camera', Prefab, (err, prefab) => {
           const camera = instantiate(prefab)
@@ -132,9 +133,17 @@ export class SceneManager extends Component {
         node: instantiate(this.playerPrefab),
       })
       const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
+      clientPlayer.node.position.set(serverPlayer.xPos, serverPlayer.yPos)
       clientPlayer.playerController = clientPlayer.node.getComponent(PlayerController)
       this.playersRef.addChild(clientPlayer.node)
     }
+
+    this._room.onMessage('serverRequestPlayerPosition', () => {
+      const clientPlayer = this._players.find((player) => player.id === this._room.sessionId)
+      const xPos = clientPlayer.node.position.x
+      const yPos = clientPlayer.node.position.y
+      this._room.send('clientDeliverPlayerPosition', { xPos, yPos })
+    })
 
     this._room.onMessage<IMovement>('serverMovePlayer', (message) => {
       const clientPlayer = this._players.find((player) => player.id === message.id)
