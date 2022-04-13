@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode, Prefab, instantiate } from 'cc'
+import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode, Prefab, instantiate, resources } from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
 import { PlayerController } from './PlayerController'
 import type { State } from './rooms/schema/Internal'
@@ -9,6 +9,11 @@ interface IPlayer {
   id: string
   node: Node
   playerController?: PlayerController
+}
+
+interface IMovement {
+  id: string
+  move: string
 }
 
 /**
@@ -50,7 +55,6 @@ export class SceneManager extends Component {
   private _client: Colyseus.Client | null = null
   private _room: Colyseus.Room<State> | null = null
   private _players: IPlayer[] = []
-  private _playerController: PlayerController | null = null
   private _moveCommands: string[] = []
   private _lastKeyDownMoveCommand: string
 
@@ -91,6 +95,12 @@ export class SceneManager extends Component {
     input.on(Input.EventType.KEY_UP, this.onKeyUp, this)
   }
 
+  async timeout(ms: number) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms)
+    })
+  }
+
   async connect() {
     try {
       this._room = await this._client.joinOrCreate('moonBase')
@@ -98,28 +108,23 @@ export class SceneManager extends Component {
       console.log('Client can not join or create moonBase room.', err)
     }
 
-    setTimeout(() => {
-      this._room.state.players.forEach((serverPlayer) => {
-        this._players.push({
-          id: serverPlayer.id,
-          node: instantiate(this.playerPrefab),
-        })
-        const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
-        clientPlayer.playerController = clientPlayer.node.getComponent(PlayerController)
-        this._playerController = clientPlayer.node.getComponent(PlayerController)
-        this.playersRef.addChild(clientPlayer.node)
-      })
-    }, 10)
+    await this.timeout(10)
 
-    // setTimeout(() => {
-    //   this._room.state.players.forEach((value: any, key: any) => {
-    //     console.log('key =>', key)
-    //     console.log('value =>', value)
-    //   })
-    //   console.log(this._room.sessionId)
-    //   console.log(this._room.state.players.get(this._room.sessionId).xPos)
-    //   console.log(this._room.state.players.toJSON())
-    // }, 10)
+    this._room.state.players.forEach((serverPlayer) => {
+      this._players.push({
+        id: serverPlayer.id,
+        node: instantiate(this.playerPrefab),
+      })
+      const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
+      if (clientPlayer.id === this._room.sessionId) {
+        resources.load('Prefabs/Camera', Prefab, (err, prefab) => {
+          const camera = instantiate(prefab)
+          clientPlayer.node.addChild(camera)
+        })
+      }
+      clientPlayer.playerController = clientPlayer.node.getComponent(PlayerController)
+      this.playersRef.addChild(clientPlayer.node)
+    })
 
     this._room.state.players.onAdd = (serverPlayer) => {
       this._players.push({
@@ -131,23 +136,25 @@ export class SceneManager extends Component {
       this.playersRef.addChild(clientPlayer.node)
     }
 
-    this._room.onMessage('serverMovePlayer', (message) => {
-      if (message === 'moveUp') {
-        this._playerController.moveUp()
-      } else if (message === 'moveRight') {
-        this._playerController.moveRight()
-      } else if (message === 'moveDown') {
-        this._playerController.moveDown()
-      } else if (message === 'moveLeft') {
-        this._playerController.moveLeft()
-      } else if (message === 'idleUp') {
-        this._playerController.idleUp()
-      } else if (message === 'idleRight') {
-        this._playerController.idleRight()
-      } else if (message === 'idleDown') {
-        this._playerController.idleDown()
-      } else if (message === 'idleLeft') {
-        this._playerController.idleLeft()
+    this._room.onMessage<IMovement>('serverMovePlayer', (message) => {
+      const clientPlayer = this._players.find((player) => player.id === message.id)
+
+      if (message.move === 'moveUp') {
+        clientPlayer.playerController.moveUp()
+      } else if (message.move === 'moveRight') {
+        clientPlayer.playerController.moveRight()
+      } else if (message.move === 'moveDown') {
+        clientPlayer.playerController.moveDown()
+      } else if (message.move === 'moveLeft') {
+        clientPlayer.playerController.moveLeft()
+      } else if (message.move === 'idleUp') {
+        clientPlayer.playerController.idleUp()
+      } else if (message.move === 'idleRight') {
+        clientPlayer.playerController.idleRight()
+      } else if (message.move === 'idleDown') {
+        clientPlayer.playerController.idleDown()
+      } else if (message.move === 'idleLeft') {
+        clientPlayer.playerController.idleLeft()
       }
     })
   }
@@ -176,22 +183,22 @@ export class SceneManager extends Component {
     if (event.keyCode === KeyCode.KEY_W) {
       this._moveCommands = this.removeItem(this._moveCommands, 'w')
       if (this._moveCommands.length === 0) {
-        this._room.send('clientMovePlayer', 'idleUp')
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleUp' })
       }
     } else if (event.keyCode === KeyCode.KEY_D) {
       this._moveCommands = this.removeItem(this._moveCommands, 'd')
       if (this._moveCommands.length === 0) {
-        this._room.send('clientMovePlayer', 'idleRight')
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleRight' })
       }
     } else if (event.keyCode === KeyCode.KEY_S) {
       this._moveCommands = this.removeItem(this._moveCommands, 's')
       if (this._moveCommands.length === 0) {
-        this._room.send('clientMovePlayer', 'idleDown')
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleDown' })
       }
     } else if (event.keyCode === KeyCode.KEY_A) {
       this._moveCommands = this.removeItem(this._moveCommands, 'a')
       if (this._moveCommands.length === 0) {
-        this._room.send('clientMovePlayer', 'idleLeft')
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleLeft' })
       }
     }
 
@@ -203,13 +210,13 @@ export class SceneManager extends Component {
   movePlayer() {
     if (this._moveCommands.length >= 1) {
       if (this._moveCommands[this._moveCommands.length - 1] === 'w') {
-        this._room.send('clientMovePlayer', 'moveUp')
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveUp' })
       } else if (this._moveCommands[this._moveCommands.length - 1] === 'd') {
-        this._room.send('clientMovePlayer', 'moveRight')
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveRight' })
       } else if (this._moveCommands[this._moveCommands.length - 1] === 's') {
-        this._room.send('clientMovePlayer', 'moveDown')
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveDown' })
       } else if (this._moveCommands[this._moveCommands.length - 1] === 'a') {
-        this._room.send('clientMovePlayer', 'moveLeft')
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveLeft' })
       }
     }
   }
