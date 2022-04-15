@@ -1,4 +1,4 @@
-import { Schema } from './Internal'
+import { Schema } from '@colyseus/schema'
 
 export interface Player extends Schema {
   id: string

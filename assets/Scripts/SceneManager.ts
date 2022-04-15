@@ -1,7 +1,20 @@
-import { _decorator, Component, Node, input, Input, EventKeyboard, KeyCode, Prefab, instantiate, resources } from 'cc'
+import {
+  _decorator,
+  Component,
+  Node,
+  input,
+  Input,
+  EventKeyboard,
+  KeyCode,
+  Prefab,
+  instantiate,
+  resources,
+  Button,
+  CCString,
+} from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
 import { PlayerController } from './PlayerController'
-import type { State } from './rooms/schema/Internal'
+import type { State } from './rooms/schema/State'
 
 const { ccclass, property } = _decorator
 
@@ -31,16 +44,16 @@ interface IMovement {
 @ccclass('SceneManager')
 export class SceneManager extends Component {
   @property
-  private serverURL: string = 'localhost'
-
-  @property
-  private port: string = '2567'
+  private serverURL: string = 'ws://localhost:2567'
 
   @property({ type: Node })
   private lobbyNode: Node | null = null
 
   @property({ type: Node })
   private joinGameButton: Node | null = null
+
+  @property({ type: Node })
+  private loadingLabel: Node | null = null
 
   @property({ type: Node })
   private gameNode: Node | null = null
@@ -51,6 +64,7 @@ export class SceneManager extends Component {
   @property({ type: Prefab })
   public playerPrefab: Prefab | null = null
 
+  // private _serverURL: string = 'localhost'
   private _gameState: string = 'LOBBY'
   private _client: Colyseus.Client | null = null
   private _room: Colyseus.Room<State> | null = null
@@ -59,8 +73,7 @@ export class SceneManager extends Component {
   private _lastKeyDownMoveCommand: string
 
   onLoad() {
-    const endpoint: string = `ws://${this.serverURL}:${this.port}`
-    this._client = new Colyseus.Client(endpoint)
+    this._client = new Colyseus.Client(this.serverURL)
 
     this.resetGame()
   }
@@ -72,7 +85,6 @@ export class SceneManager extends Component {
   update(deltaTime: number) {}
 
   onDisable() {
-    this.joinGameButton.off(Input.EventType.MOUSE_DOWN, this.joinGame, this)
     input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     input.off(Input.EventType.KEY_UP, this.onKeyUp, this)
   }
@@ -88,8 +100,9 @@ export class SceneManager extends Component {
   }
 
   joinGame() {
-    this._gameState = 'GAME'
-    this.handleGameState()
+    this.joinGameButton.getComponent(Button).interactable = false
+    this.joinGameButton.off(Input.EventType.MOUSE_DOWN, this.joinGame, this)
+    this.loadingLabel.active = true
     this.connect()
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     input.on(Input.EventType.KEY_UP, this.onKeyUp, this)
@@ -108,7 +121,10 @@ export class SceneManager extends Component {
       console.log('Client can not join or create moonBase room.', err)
     }
 
-    await this.timeout(10)
+    this._gameState = 'GAME'
+    this.handleGameState()
+
+    await this.timeout(900)
 
     this._room.state.players.forEach((serverPlayer) => {
       this._players.push({
@@ -143,6 +159,12 @@ export class SceneManager extends Component {
       const xPos = clientPlayer.node.position.x
       const yPos = clientPlayer.node.position.y
       this._room.send('clientDeliverPlayerPosition', { xPos, yPos })
+    })
+
+    this._room.onMessage('playerLeaveRoom', (message) => {
+      const clientPlayer = this._players.find((player) => player.id === message.id)
+      clientPlayer.node.destroy()
+      this._players = this._players.filter((player) => player.id !== message.id)
     })
 
     this._room.onMessage<IMovement>('serverMovePlayer', (message) => {
