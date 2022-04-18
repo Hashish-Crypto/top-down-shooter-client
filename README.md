@@ -10,8 +10,8 @@ Live demo: [acquati.itch.io/top-down-shooter-client](https://acquati.itch.io/top
 ```
 git clone https://github.com/Hashish-Crypto/top-down-shooter-server.git
 cd top-down-shooter-server
-yarn install
-yarn start
+npm install
+npm start
 ```
 
 ## Running the client locally
@@ -19,7 +19,7 @@ yarn start
 ```
 git clone https://github.com/Hashish-Crypto/top-down-shooter-client.git
 cd top-down-shooter-client
-yarn install
+npm install
 ```
 
 Open Cocos Dashboard and add this project.
@@ -44,10 +44,6 @@ nvm current
 nvm use 17.6.0
 node -v
 npm -v
-
-# Install Yarn
-npm install -g yarn
-yarn -v
 ```
 
 ## License
