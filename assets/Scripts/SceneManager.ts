@@ -10,7 +10,6 @@ import {
   instantiate,
   resources,
   Button,
-  CCString,
 } from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
 import { PlayerController } from './PlayerController'
@@ -79,7 +78,7 @@ export class SceneManager extends Component {
   }
 
   onEnable() {
-    this.joinGameButton.on(Input.EventType.MOUSE_DOWN, this.joinGame, this)
+    this.joinGameButton.on(Button.EventType.CLICK, this.joinGame, this)
   }
 
   update(deltaTime: number) {}
@@ -101,7 +100,7 @@ export class SceneManager extends Component {
 
   joinGame() {
     this.joinGameButton.getComponent(Button).interactable = false
-    this.joinGameButton.off(Input.EventType.MOUSE_DOWN, this.joinGame, this)
+    this.joinGameButton.off(Button.EventType.CLICK, this.joinGame, this)
     this.loadingLabel.active = true
     this.connect()
     input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this)
