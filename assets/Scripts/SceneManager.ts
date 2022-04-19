@@ -10,8 +10,10 @@ import {
   instantiate,
   resources,
   Button,
+  Widget,
 } from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
+import { Joystick } from './Joystick'
 import { PlayerController } from './PlayerController'
 import type { State } from './rooms/schema/State'
 
@@ -70,6 +72,9 @@ export class SceneManager extends Component {
   private _players: IPlayer[] = []
   private _moveCommands: string[] = []
   private _lastKeyDownMoveCommand: string
+  private _joystick: Joystick | null = null
+  private _joystickLoaded: boolean = false
+  private _joystickLastMove: string = 'idleDown'
 
   onLoad() {
     this._client = new Colyseus.Client(this.serverURL)
@@ -81,7 +86,35 @@ export class SceneManager extends Component {
     this.joinGameButton.on(Button.EventType.CLICK, this.joinGame, this)
   }
 
-  update(deltaTime: number) {}
+  update(deltaTime: number) {
+    if (this._joystickLoaded) {
+      if (this._joystick.move === 'idleUp' && this._joystickLastMove !== 'idleUp') {
+        this._joystickLastMove = 'idleUp'
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleUp' })
+      } else if (this._joystick.move === 'idleRight' && this._joystickLastMove !== 'idleRight') {
+        this._joystickLastMove = 'idleRight'
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleRight' })
+      } else if (this._joystick.move === 'idleDown' && this._joystickLastMove !== 'idleDown') {
+        this._joystickLastMove = 'idleDown'
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleDown' })
+      } else if (this._joystick.move === 'idleLeft' && this._joystickLastMove !== 'idleLeft') {
+        this._joystickLastMove = 'idleLeft'
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleLeft' })
+      } else if (this._joystick.move === 'moveUp' && this._joystickLastMove !== 'moveUp') {
+        this._joystickLastMove = 'moveUp'
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveUp' })
+      } else if (this._joystick.move === 'moveRight' && this._joystickLastMove !== 'moveRight') {
+        this._joystickLastMove = 'moveRight'
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveRight' })
+      } else if (this._joystick.move === 'moveDown' && this._joystickLastMove !== 'moveDown') {
+        this._joystickLastMove = 'moveDown'
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveDown' })
+      } else if (this._joystick.move === 'moveLeft' && this._joystickLastMove !== 'moveLeft') {
+        this._joystickLastMove = 'moveLeft'
+        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveLeft' })
+      }
+    }
+  }
 
   onDisable() {
     input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
@@ -133,9 +166,17 @@ export class SceneManager extends Component {
       const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
       clientPlayer.node.position.set(serverPlayer.xPos, serverPlayer.yPos)
       if (clientPlayer.id === this._room.sessionId) {
+        let camera: Node
         resources.load('Prefabs/Camera', Prefab, (err, prefab) => {
-          const camera = instantiate(prefab)
+          camera = instantiate(prefab)
           clientPlayer.node.addChild(camera)
+          camera.getComponent(Widget).target = this.gameNode
+        })
+        resources.load('Prefabs/Joystick', Prefab, (err, prefab) => {
+          const joystickNode = instantiate(prefab)
+          camera.addChild(joystickNode)
+          this._joystick = joystickNode.getComponent(Joystick)
+          this._joystickLoaded = true
         })
       }
       clientPlayer.playerController = clientPlayer.node.getComponent(PlayerController)
