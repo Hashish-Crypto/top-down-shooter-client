@@ -79,6 +79,7 @@ export class SceneManager extends Component {
   private _joystickLoaded: boolean = false
   private _joystickLastMove: string = 'idleDown'
   private _debug: boolean = true
+  private _gamepadLoaded: boolean = false
 
   onLoad() {
     if (this._debug) {
@@ -92,6 +93,10 @@ export class SceneManager extends Component {
 
     this._client = new Colyseus.Client(this.serverURL)
 
+    window.addEventListener('gamepadconnected', this.gamepadConnected)
+
+    window.addEventListener('gamepaddisconnected', this.gamepadDisconnected)
+
     this.resetGame()
   }
 
@@ -103,28 +108,42 @@ export class SceneManager extends Component {
     if (this._joystickLoaded) {
       if (this._joystick.move === 'idleUp' && this._joystickLastMove !== 'idleUp') {
         this._joystickLastMove = 'idleUp'
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleUp' })
+        this.idleUp()
       } else if (this._joystick.move === 'idleRight' && this._joystickLastMove !== 'idleRight') {
         this._joystickLastMove = 'idleRight'
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleRight' })
+        this.idleRight()
       } else if (this._joystick.move === 'idleDown' && this._joystickLastMove !== 'idleDown') {
         this._joystickLastMove = 'idleDown'
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleDown' })
+        this.idleDown()
       } else if (this._joystick.move === 'idleLeft' && this._joystickLastMove !== 'idleLeft') {
         this._joystickLastMove = 'idleLeft'
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleLeft' })
+        this.idleLeft()
       } else if (this._joystick.move === 'moveUp' && this._joystickLastMove !== 'moveUp') {
         this._joystickLastMove = 'moveUp'
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveUp' })
+        this.moveUp()
       } else if (this._joystick.move === 'moveRight' && this._joystickLastMove !== 'moveRight') {
         this._joystickLastMove = 'moveRight'
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveRight' })
+        this.moveRight()
       } else if (this._joystick.move === 'moveDown' && this._joystickLastMove !== 'moveDown') {
         this._joystickLastMove = 'moveDown'
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveDown' })
+        this.moveDown()
       } else if (this._joystick.move === 'moveLeft' && this._joystickLastMove !== 'moveLeft') {
         this._joystickLastMove = 'moveLeft'
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveLeft' })
+        this.moveLeft()
+      }
+    }
+
+    if (this._gamepadLoaded) {
+      const gamepad = navigator.getGamepads()[0]
+
+      if (gamepad.buttons[12].pressed) {
+        this.moveUp()
+      } else if (gamepad.buttons[15].pressed) {
+        this.moveRight()
+      } else if (gamepad.buttons[13].pressed) {
+        this.moveDown()
+      } else if (gamepad.buttons[14].pressed) {
+        this.moveLeft()
       }
     }
   }
@@ -132,6 +151,19 @@ export class SceneManager extends Component {
   onDisable() {
     input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this)
     input.off(Input.EventType.KEY_UP, this.onKeyUp, this)
+    window.removeEventListener('gamepadconnected', this.gamepadConnected)
+    window.removeEventListener('gamepaddisconnected', this.gamepadDisconnected)
+  }
+
+  gamepadConnected = (event: GamepadEvent) => {
+    console.log(this._gamepadLoaded)
+    this._gamepadLoaded = true
+  }
+
+  gamepadDisconnected = (event: GamepadEvent) => {
+    if (event.gamepad.index === 0) {
+      this._gamepadLoaded = false
+    }
   }
 
   resetGame() {
@@ -267,17 +299,17 @@ export class SceneManager extends Component {
     if (event.keyCode === KeyCode.KEY_W) {
       this._moveCommands = this.removeItem(this._moveCommands, 'w')
       if (this._moveCommands.length === 0) {
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleUp' })
+        this.idleUp()
       }
     } else if (event.keyCode === KeyCode.KEY_D) {
       this._moveCommands = this.removeItem(this._moveCommands, 'd')
       if (this._moveCommands.length === 0) {
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleRight' })
+        this.idleRight()
       }
     } else if (event.keyCode === KeyCode.KEY_S) {
       this._moveCommands = this.removeItem(this._moveCommands, 's')
       if (this._moveCommands.length === 0) {
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleDown' })
+        this.idleDown()
       }
     } else if (event.keyCode === KeyCode.KEY_A) {
       this._moveCommands = this.removeItem(this._moveCommands, 'a')
@@ -294,15 +326,47 @@ export class SceneManager extends Component {
   movePlayer() {
     if (this._moveCommands.length >= 1) {
       if (this._moveCommands[this._moveCommands.length - 1] === 'w') {
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveUp' })
+        this.moveUp()
       } else if (this._moveCommands[this._moveCommands.length - 1] === 'd') {
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveRight' })
+        this.moveRight()
       } else if (this._moveCommands[this._moveCommands.length - 1] === 's') {
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveDown' })
+        this.moveDown()
       } else if (this._moveCommands[this._moveCommands.length - 1] === 'a') {
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveLeft' })
+        this.moveLeft()
       }
     }
+  }
+
+  moveUp() {
+    this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveUp' })
+  }
+
+  moveRight() {
+    this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveRight' })
+  }
+
+  moveDown() {
+    this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveDown' })
+  }
+
+  moveLeft() {
+    this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'moveLeft' })
+  }
+
+  idleUp() {
+    this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleUp' })
+  }
+
+  idleRight() {
+    this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleRight' })
+  }
+
+  idleDown() {
+    this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleDown' })
+  }
+
+  idleLeft() {
+    this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleLeft' })
   }
 
   removeItem(arr: string[], value: string) {

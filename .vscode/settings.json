@@ -28,6 +28,6 @@
     "local/": true,
     "temp/": true
   },
-  "cSpell.words": ["Aabb", "ccclass", "Colyseus", "interactable"],
+  "cSpell.words": ["Aabb", "ccclass", "Colyseus", "gamepadconnected", "gamepaddisconnected", "interactable"],
   "editor.foldingMaximumRegions": 50000
 }
