@@ -11,6 +11,10 @@ import {
   resources,
   Button,
   Widget,
+  PhysicsSystem2D,
+  EPhysics2DDrawFlags,
+  Canvas,
+  Camera,
 } from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
 import { Joystick } from './Joystick'
@@ -63,9 +67,8 @@ export class SceneManager extends Component {
   private playersRef: Node | null = null
 
   @property({ type: Prefab })
-  public playerPrefab: Prefab | null = null
+  private playerPrefab: Prefab | null = null
 
-  // private _serverURL: string = 'localhost'
   private _gameState: string = 'LOBBY'
   private _client: Colyseus.Client | null = null
   private _room: Colyseus.Room<State> | null = null
@@ -75,8 +78,18 @@ export class SceneManager extends Component {
   private _joystick: Joystick | null = null
   private _joystickLoaded: boolean = false
   private _joystickLastMove: string = 'idleDown'
+  private _debug: boolean = true
 
   onLoad() {
+    if (this._debug) {
+      PhysicsSystem2D.instance.debugDrawFlags =
+        EPhysics2DDrawFlags.Aabb |
+        EPhysics2DDrawFlags.Pair |
+        EPhysics2DDrawFlags.CenterOfMass |
+        EPhysics2DDrawFlags.Joint |
+        EPhysics2DDrawFlags.Shape
+    }
+
     this._client = new Colyseus.Client(this.serverURL)
 
     this.resetGame()
@@ -166,15 +179,15 @@ export class SceneManager extends Component {
       const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
       clientPlayer.node.position.set(serverPlayer.xPos, serverPlayer.yPos)
       if (clientPlayer.id === this._room.sessionId) {
-        let camera: Node
         resources.load('Prefabs/Camera', Prefab, (err, prefab) => {
-          camera = instantiate(prefab)
+          const camera = instantiate(prefab)
           clientPlayer.node.addChild(camera)
-          camera.getComponent(Widget).target = this.gameNode
+          this.gameNode.getComponent(Canvas).cameraComponent = camera.getComponent(Camera)
         })
         resources.load('Prefabs/Joystick', Prefab, (err, prefab) => {
           const joystickNode = instantiate(prefab)
-          camera.addChild(joystickNode)
+          clientPlayer.node.addChild(joystickNode)
+          joystickNode.getComponent(Widget).target = this.gameNode
           this._joystick = joystickNode.getComponent(Joystick)
           this._joystickLoaded = true
         })

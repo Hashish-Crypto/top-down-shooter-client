@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, EventTouch, Vec3, Vec2 } from 'cc'
+import { _decorator, Component, Node, EventTouch, Vec3 } from 'cc'
 
 const { ccclass, property } = _decorator
 
