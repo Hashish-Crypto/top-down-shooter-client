@@ -82,7 +82,7 @@ export class SceneManager extends Component {
   private _joystickLastMove: string = 'idleDown'
   private _gamepadLoaded: boolean = false
   private _gamepadLastMove: string | null = null
-  private _debug: boolean = true
+  private _debug: boolean = false
 
   onLoad() {
     if (this._debug) {
