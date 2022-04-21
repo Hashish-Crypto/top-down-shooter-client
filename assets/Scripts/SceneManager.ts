@@ -10,7 +10,6 @@ import {
   instantiate,
   resources,
   Button,
-  Widget,
   PhysicsSystem2D,
   EPhysics2DDrawFlags,
   Canvas,
@@ -62,6 +61,9 @@ export class SceneManager extends Component {
 
   @property({ type: Node })
   private gameNode: Node | null = null
+
+  @property({ type: Node })
+  private gameUINode: Node | null = null
 
   @property({ type: Node })
   private playersRef: Node | null = null
@@ -174,6 +176,7 @@ export class SceneManager extends Component {
   handleGameState() {
     this.lobbyNode.active = this._gameState === 'LOBBY'
     this.gameNode.active = this._gameState === 'GAME'
+    this.gameUINode.active = this._gameState === 'GAME'
   }
 
   joinGame() {
@@ -216,13 +219,8 @@ export class SceneManager extends Component {
           clientPlayer.node.addChild(camera)
           this.gameNode.getComponent(Canvas).cameraComponent = camera.getComponent(Camera)
         })
-        resources.load('Prefabs/Joystick', Prefab, (err, prefab) => {
-          const joystickNode = instantiate(prefab)
-          clientPlayer.node.addChild(joystickNode)
-          joystickNode.getComponent(Widget).target = this.gameNode
-          this._joystick = joystickNode.getComponent(Joystick)
-          this._joystickLoaded = true
-        })
+        this._joystick = this.gameUINode.getComponentInChildren(Joystick)
+        this._joystickLoaded = true
       }
       clientPlayer.playerController = clientPlayer.node.getComponent(PlayerController)
       this.playersRef.addChild(clientPlayer.node)

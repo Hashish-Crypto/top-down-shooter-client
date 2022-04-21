@@ -103,6 +103,9 @@
     "gameNode": {
       "__id__": 23
     },
+    "gameUINode": {
+      "__id__": 35
+    },
     "playersRef": {
       "__id__": 30
     },
@@ -254,7 +257,7 @@
     "_shutter": 7,
     "_iso": 0,
     "_screenScale": 1,
-    "_visibility": 41943040,
+    "_visibility": 33554432,
     "_targetTexture": null,
     "_id": "c7nLFXC7FCg4YWtNMTD8hQ"
   },
@@ -1182,7 +1185,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Canvas",
+    "_name": "GameUI",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -1195,7 +1198,7 @@
         "__id__": 38
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 46

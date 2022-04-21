@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, EventTouch, Vec3 } from 'cc'
+import { _decorator, Component, Node, EventTouch, Vec3, View } from 'cc'
 
 const { ccclass, property } = _decorator
 
@@ -28,6 +28,7 @@ export class Joystick extends Component {
     this.node.on(Node.EventType.TOUCH_MOVE, this.touchMove, this)
     this.node.on(Node.EventType.TOUCH_END, this.touchEnd, this)
     this.node.on(Node.EventType.TOUCH_CANCEL, this.touchEnd, this)
+    // View.instance.setResizeCallback(() => {})
   }
 
   // start() {}
