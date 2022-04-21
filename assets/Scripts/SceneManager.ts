@@ -80,8 +80,9 @@ export class SceneManager extends Component {
   private _joystick: Joystick | null = null
   private _joystickLoaded: boolean = false
   private _joystickLastMove: string = 'idleDown'
-  private _debug: boolean = true
   private _gamepadLoaded: boolean = false
+  private _gamepadLastMove: string | null = null
+  private _debug: boolean = true
 
   onLoad() {
     if (this._debug) {
@@ -126,6 +127,7 @@ export class SceneManager extends Component {
       } else if (this._joystick.move === 'moveRight' && this._joystickLastMove !== 'moveRight') {
         this._joystickLastMove = 'moveRight'
         this.moveRight()
+        console.log(deltaTime)
       } else if (this._joystick.move === 'moveDown' && this._joystickLastMove !== 'moveDown') {
         this._joystickLastMove = 'moveDown'
         this.moveDown()
@@ -138,14 +140,30 @@ export class SceneManager extends Component {
     if (this._gamepadLoaded) {
       const gamepad = navigator.getGamepads()[0]
 
-      if (gamepad.buttons[12].pressed) {
+      if (gamepad.buttons[12].pressed && this._gamepadLastMove !== 'moveUp') {
+        this._gamepadLastMove = 'moveUp'
         this.moveUp()
-      } else if (gamepad.buttons[15].pressed) {
+      } else if (gamepad.buttons[15].pressed && this._gamepadLastMove !== 'moveRight') {
+        this._gamepadLastMove = 'moveRight'
         this.moveRight()
-      } else if (gamepad.buttons[13].pressed) {
+      } else if (gamepad.buttons[13].pressed && this._gamepadLastMove !== 'moveDown') {
+        this._gamepadLastMove = 'moveDown'
         this.moveDown()
-      } else if (gamepad.buttons[14].pressed) {
+      } else if (gamepad.buttons[14].pressed && this._gamepadLastMove !== 'moveLeft') {
+        this._gamepadLastMove = 'moveLeft'
         this.moveLeft()
+      } else if (!gamepad.buttons[12].pressed && this._gamepadLastMove === 'moveUp') {
+        this._gamepadLastMove = null
+        this.idleUp()
+      } else if (!gamepad.buttons[15].pressed && this._gamepadLastMove === 'moveRight') {
+        this._gamepadLastMove = null
+        this.idleRight()
+      } else if (!gamepad.buttons[13].pressed && this._gamepadLastMove === 'moveDown') {
+        this._gamepadLastMove = null
+        this.idleDown()
+      } else if (!gamepad.buttons[14].pressed && this._gamepadLastMove === 'moveLeft') {
+        this._gamepadLastMove = null
+        this.idleLeft()
       }
     }
   }
@@ -158,8 +176,8 @@ export class SceneManager extends Component {
   }
 
   gamepadConnected = (event: GamepadEvent) => {
-    console.log(this._gamepadLoaded)
     this._gamepadLoaded = true
+    console.log()
   }
 
   gamepadDisconnected = (event: GamepadEvent) => {
