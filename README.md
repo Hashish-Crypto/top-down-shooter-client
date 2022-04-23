@@ -43,7 +43,7 @@ Open Git Bash as system administrator:
 # Install Node and NPM
 nvm install latest
 nvm current
-nvm use 17.6.0
+nvm use 18.0.0
 node -v
 npm -v
 ```
