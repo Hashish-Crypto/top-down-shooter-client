@@ -127,7 +127,6 @@ export class SceneManager extends Component {
       } else if (this._joystick.move === 'moveRight' && this._joystickLastMove !== 'moveRight') {
         this._joystickLastMove = 'moveRight'
         this.moveRight()
-        console.log(deltaTime)
       } else if (this._joystick.move === 'moveDown' && this._joystickLastMove !== 'moveDown') {
         this._joystickLastMove = 'moveDown'
         this.moveDown()
@@ -177,7 +176,6 @@ export class SceneManager extends Component {
 
   gamepadConnected = (event: GamepadEvent) => {
     this._gamepadLoaded = true
-    console.log()
   }
 
   gamepadDisconnected = (event: GamepadEvent) => {
