@@ -27,10 +27,6 @@ export class PlayerController extends Component {
     this._animation = this.node.getComponent(Animation)
   }
 
-  // start() {}
-
-  // update(deltaTime: number) {}
-
   moveUp() {
     this._body.linearVelocity = new Vec2(0, this.velocity)
     this._animation.play('walkUp')

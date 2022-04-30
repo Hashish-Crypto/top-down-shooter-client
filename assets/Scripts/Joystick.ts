@@ -45,25 +45,21 @@ export class Joystick extends Component {
     uiTransform.setContentSize(ringSize)
     this.ring.getChildByName('Background').getComponent(UITransform).setContentSize(ringSize)
 
-    this.node.on(Node.EventType.TOUCH_START, this.touchStart, this)
-    this.node.on(Node.EventType.TOUCH_MOVE, this.touchMove, this)
-    this.node.on(Node.EventType.TOUCH_END, this.touchEnd, this)
-    this.node.on(Node.EventType.TOUCH_CANCEL, this.touchEnd, this)
+    this.node.on(Node.EventType.TOUCH_START, this._touchStart, this)
+    this.node.on(Node.EventType.TOUCH_MOVE, this._touchMove, this)
+    this.node.on(Node.EventType.TOUCH_END, this._touchEnd, this)
+    this.node.on(Node.EventType.TOUCH_CANCEL, this._touchEnd, this)
     // View.instance.setResizeCallback(() => {})
   }
 
-  // start() {}
-
-  // update(deltaTime: number) {}
-
   onDisable() {
-    this.node.off(Node.EventType.TOUCH_START, this.touchStart, this)
-    this.node.off(Node.EventType.TOUCH_MOVE, this.touchMove, this)
-    this.node.off(Node.EventType.TOUCH_END, this.touchEnd, this)
-    this.node.off(Node.EventType.TOUCH_CANCEL, this.touchEnd, this)
+    this.node.off(Node.EventType.TOUCH_START, this._touchStart, this)
+    this.node.off(Node.EventType.TOUCH_MOVE, this._touchMove, this)
+    this.node.off(Node.EventType.TOUCH_END, this._touchEnd, this)
+    this.node.off(Node.EventType.TOUCH_CANCEL, this._touchEnd, this)
   }
 
-  touchStart(event: EventTouch) {
+  private _touchStart(event: EventTouch) {
     if (!this.ring || !this.ball) return
 
     const location = event.getUILocation()
@@ -75,10 +71,10 @@ export class Joystick extends Component {
       this.ball.setPosition(moveVector)
     }
 
-    this.setMove(moveVector.normalize())
+    this._setMove(moveVector.normalize())
   }
 
-  touchMove(event: EventTouch) {
+  private _touchMove(event: EventTouch) {
     if (!this.ring || !this.ball) return
 
     const location = event.getTouches()[0].getUILocation()
@@ -92,10 +88,10 @@ export class Joystick extends Component {
       this.ball.setPosition(moveVector.normalize().multiplyScalar(this.maxRadius))
     }
 
-    this.setMove(moveVector.normalize())
+    this._setMove(moveVector.normalize())
   }
 
-  touchEnd(event: EventTouch) {
+  private _touchEnd(event: EventTouch) {
     if (!this.ring || !this.ball) return
 
     const location = event.getUILocation()
@@ -116,7 +112,7 @@ export class Joystick extends Component {
     this.ball.setPosition(new Vec3())
   }
 
-  setMove(vector: Vec3) {
+  private _setMove(vector: Vec3) {
     if (vector.x < this._piDividedBy4 && vector.x > -this._piDividedBy4 && vector.y >= this._piDividedBy4) {
       this.move = 'moveUp'
     } else if (vector.x >= this._piDividedBy4 && vector.y < this._piDividedBy4 && vector.y > -this._piDividedBy4) {
