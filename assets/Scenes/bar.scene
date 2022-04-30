@@ -329,7 +329,7 @@
       "__uuid__": "c6d5b461-1a72-47cb-a6e9-564330531bab",
       "__expectedType__": "cc.TiledMapAsset"
     },
-    "_enableCulling": true,
+    "_enableCulling": false,
     "cleanupImageCache": true,
     "_id": "21W/MjtkNJl6WK7sCvk2zZ"
   },
