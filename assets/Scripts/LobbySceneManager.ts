@@ -37,6 +37,6 @@ export class LobbySceneManager extends Component {
   private _joinGame() {
     this.joinGameButton.getComponent(Button).interactable = false
     this.loadingLabel.active = true
-    this._persistentNode.connect()
+    this._persistentNode.connect('moonBase')
   }
 }

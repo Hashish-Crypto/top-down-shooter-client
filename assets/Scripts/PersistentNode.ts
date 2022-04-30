@@ -35,16 +35,16 @@ export class PersistentNode extends Component {
     })
   }
 
-  async connect() {
+  async connect(roomName: string) {
     try {
-      this._room = await this._client.joinOrCreate('moonBase')
+      this._room = await this._client.joinOrCreate(roomName)
     } catch (err) {
-      console.log('Client can not join or create moonBase room.', err)
+      console.log('Client can not join or create ' + roomName + ' room.', err)
     }
 
     await this._timeout(800)
 
-    director.loadScene('moonBase')
+    director.loadScene(roomName)
   }
 
   getRoom() {
