@@ -29,11 +29,11 @@ export class PersistentNode extends Component {
     this._client = new Colyseus.Client(this.serverURL)
   }
 
-  // private async _timeout(ms: number) {
-  //   return new Promise((resolve) => {
-  //     setTimeout(resolve, ms)
-  //   })
-  // }
+  private async _timeout(ms: number) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms)
+    })
+  }
 
   async connect() {
     try {
@@ -42,7 +42,7 @@ export class PersistentNode extends Component {
       console.log('Client can not join or create moonBase room.', err)
     }
 
-    // await this._timeout(900)
+    await this._timeout(800)
 
     director.loadScene('moonBase')
   }
