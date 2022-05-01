@@ -11,12 +11,17 @@
       {
         "index": 2,
         "name": "PLAYER"
+      },
+      {
+        "index": 3,
+        "name": "SENSOR"
       }
     ],
     "collisionMatrix": {
       "0": 7,
       "1": 5,
-      "2": 3
+      "2": 11,
+      "3": 4
     }
   },
   "general": {

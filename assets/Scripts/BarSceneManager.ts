@@ -14,6 +14,8 @@ import {
   Camera,
   EventKeyboard,
   KeyCode,
+  Contact2DType,
+  Collider2D,
 } from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
 import { State } from './rooms/schema/State'
@@ -60,9 +62,11 @@ export class BarSceneManager extends Component {
   @property({ type: Prefab })
   private playerPrefab: Prefab | null = null
 
-  private _client: Colyseus.Client | null = null
+  private _persistentNode: PersistentNode | null = null
   private _room: Colyseus.Room<State> | null = null
   private _players: IPlayer[] = []
+  private _currentPlayerUUID: string | null = null
+  private _playerControllerActive: boolean = true
   private _moveCommands: string[] = []
   private _lastKeyDownMoveCommand: string
   private _joystick: Joystick | null = null
@@ -70,7 +74,7 @@ export class BarSceneManager extends Component {
   private _joystickLastMove: string = 'idleDown'
   private _gamepadLoaded: boolean = false
   private _gamepadLastMove: string | null = null
-  private _debug: boolean = false
+  private _debug: boolean = true
 
   onLoad() {
     if (this._debug) {
@@ -82,14 +86,15 @@ export class BarSceneManager extends Component {
         EPhysics2DDrawFlags.Shape
     }
 
-    const persistentNode = find('PersistRootNode').getComponent(PersistentNode)
-    this._client = persistentNode.getClient()
-    this._room = persistentNode.getRoom()
+    this._persistentNode = find('PersistRootNode').getComponent(PersistentNode)
+    this._room = this._persistentNode.getRoom()
 
     input.on(Input.EventType.KEY_DOWN, this._onKeyDown, this)
     input.on(Input.EventType.KEY_UP, this._onKeyUp, this)
     window.addEventListener('gamepadconnected', this._gamepadConnected)
     window.addEventListener('gamepaddisconnected', this._gamepadDisconnected)
+
+    PhysicsSystem2D.instance.on(Contact2DType.BEGIN_CONTACT, this._onBeginContact, this)
 
     this._room.state.players.forEach((serverPlayer) => {
       this._players.push({
@@ -106,6 +111,7 @@ export class BarSceneManager extends Component {
         })
         this._joystick = this.gameUINode.getComponentInChildren(Joystick)
         this._joystickLoaded = true
+        this._currentPlayerUUID = clientPlayer.node.uuid
       }
       clientPlayer.playerController = clientPlayer.node.getComponent(PlayerController)
       this.playersRef.addChild(clientPlayer.node)
@@ -159,7 +165,7 @@ export class BarSceneManager extends Component {
   }
 
   update(deltaTime: number) {
-    if (this._joystickLoaded) {
+    if (this._joystickLoaded && this._playerControllerActive) {
       if (this._joystick.move === 'idleUp' && this._joystickLastMove !== 'idleUp') {
         this._joystickLastMove = 'idleUp'
         this._idleUp()
@@ -187,7 +193,7 @@ export class BarSceneManager extends Component {
       }
     }
 
-    if (this._gamepadLoaded) {
+    if (this._gamepadLoaded && this._playerControllerActive) {
       const gamepad = navigator.getGamepads()[0]
 
       if (gamepad.buttons[12].pressed && this._gamepadLastMove !== 'moveUp') {
@@ -236,50 +242,66 @@ export class BarSceneManager extends Component {
   }
 
   private _onKeyDown(event: EventKeyboard) {
-    if (event.keyCode === KeyCode.KEY_W && !this._moveCommands.includes('w')) {
-      this._lastKeyDownMoveCommand = 'w'
-      this._moveCommands.push('w')
-      this._movePlayer()
-    } else if (event.keyCode === KeyCode.KEY_D && !this._moveCommands.includes('d')) {
-      this._lastKeyDownMoveCommand = 'd'
-      this._moveCommands.push('d')
-      this._movePlayer()
-    } else if (event.keyCode === KeyCode.KEY_S && !this._moveCommands.includes('s')) {
-      this._lastKeyDownMoveCommand = 's'
-      this._moveCommands.push('s')
-      this._movePlayer()
-    } else if (event.keyCode === KeyCode.KEY_A && !this._moveCommands.includes('a')) {
-      this._lastKeyDownMoveCommand = 'a'
-      this._moveCommands.push('a')
-      this._movePlayer()
+    if (this._playerControllerActive) {
+      if (event.keyCode === KeyCode.KEY_W && !this._moveCommands.includes('w')) {
+        this._lastKeyDownMoveCommand = 'w'
+        this._moveCommands.push('w')
+        this._movePlayer()
+      } else if (event.keyCode === KeyCode.KEY_D && !this._moveCommands.includes('d')) {
+        this._lastKeyDownMoveCommand = 'd'
+        this._moveCommands.push('d')
+        this._movePlayer()
+      } else if (event.keyCode === KeyCode.KEY_S && !this._moveCommands.includes('s')) {
+        this._lastKeyDownMoveCommand = 's'
+        this._moveCommands.push('s')
+        this._movePlayer()
+      } else if (event.keyCode === KeyCode.KEY_A && !this._moveCommands.includes('a')) {
+        this._lastKeyDownMoveCommand = 'a'
+        this._moveCommands.push('a')
+        this._movePlayer()
+      }
     }
   }
 
   private _onKeyUp(event: EventKeyboard) {
-    if (event.keyCode === KeyCode.KEY_W) {
-      this._moveCommands = this._removeItem(this._moveCommands, 'w')
-      if (this._moveCommands.length === 0) {
-        this._idleUp()
+    if (this._playerControllerActive) {
+      if (event.keyCode === KeyCode.KEY_W) {
+        this._moveCommands = this._removeItem(this._moveCommands, 'w')
+        if (this._moveCommands.length === 0) {
+          this._idleUp()
+        }
+      } else if (event.keyCode === KeyCode.KEY_D) {
+        this._moveCommands = this._removeItem(this._moveCommands, 'd')
+        if (this._moveCommands.length === 0) {
+          this._idleRight()
+        }
+      } else if (event.keyCode === KeyCode.KEY_S) {
+        this._moveCommands = this._removeItem(this._moveCommands, 's')
+        if (this._moveCommands.length === 0) {
+          this._idleDown()
+        }
+      } else if (event.keyCode === KeyCode.KEY_A) {
+        this._moveCommands = this._removeItem(this._moveCommands, 'a')
+        if (this._moveCommands.length === 0) {
+          this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleLeft' })
+        }
       }
-    } else if (event.keyCode === KeyCode.KEY_D) {
-      this._moveCommands = this._removeItem(this._moveCommands, 'd')
-      if (this._moveCommands.length === 0) {
-        this._idleRight()
-      }
-    } else if (event.keyCode === KeyCode.KEY_S) {
-      this._moveCommands = this._removeItem(this._moveCommands, 's')
-      if (this._moveCommands.length === 0) {
-        this._idleDown()
-      }
-    } else if (event.keyCode === KeyCode.KEY_A) {
-      this._moveCommands = this._removeItem(this._moveCommands, 'a')
-      if (this._moveCommands.length === 0) {
-        this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleLeft' })
+
+      if (this._lastKeyDownMoveCommand !== this._moveCommands[this._moveCommands.length - 1]) {
+        this._movePlayer()
       }
     }
+  }
 
-    if (this._lastKeyDownMoveCommand !== this._moveCommands[this._moveCommands.length - 1]) {
-      this._movePlayer()
+  private _onBeginContact(a: Collider2D, b: Collider2D) {
+    if (b.node.uuid === this._currentPlayerUUID) {
+      if (a.node.name === 'BarDoor') {
+        this._playerControllerActive = false
+        this._idleDown()
+        console.log('MoonBase')
+        this._room.send('clientRemovePlayer')
+        this._persistentNode.connect('moonBase')
+      }
     }
   }
 
