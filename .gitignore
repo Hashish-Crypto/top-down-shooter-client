@@ -18,7 +18,6 @@ node_modules/
 .idea/
 
 # misc
-package-lock.json
 npm-debug.log
 yarn-error.log
 lerna-debug.log

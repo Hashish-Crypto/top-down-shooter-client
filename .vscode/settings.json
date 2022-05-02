@@ -29,5 +29,6 @@
     "temp/": true
   },
   "cSpell.words": ["Aabb", "acquati", "ccclass", "Colyseus", "gamepadconnected", "gamepaddisconnected", "interactable"],
-  "editor.foldingMaximumRegions": 50000
+  "editor.foldingMaximumRegions": 50000,
+  "files.eol": "\n"
 }

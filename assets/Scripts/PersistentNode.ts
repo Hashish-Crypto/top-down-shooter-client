@@ -26,7 +26,6 @@ export class PersistentNode extends Component {
 
   onLoad() {
     game.addPersistRootNode(this.node)
-    this._client = new Colyseus.Client(this.serverURL)
   }
 
   private async _timeout(ms: number) {
@@ -36,6 +35,8 @@ export class PersistentNode extends Component {
   }
 
   async connect(roomName: string) {
+    this._client = new Colyseus.Client(this.serverURL)
+
     try {
       this._room = await this._client.joinOrCreate(roomName)
     } catch (err) {
