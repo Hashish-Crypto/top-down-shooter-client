@@ -74,7 +74,7 @@ export class MoonBaseSceneManager extends Component {
   private _joystickLastMove: string = 'idleDown'
   private _gamepadLoaded: boolean = false
   private _gamepadLastMove: string | null = null
-  private _debug: boolean = true
+  private _debug: boolean = false
 
   onLoad() {
     if (this._debug) {
@@ -303,7 +303,7 @@ export class MoonBaseSceneManager extends Component {
         this._idleUp()
         console.log('Bar')
         this._room.send('clientRemovePlayer')
-        this._persistentNode.connect('bar')
+        this._persistentNode.connect('Bar')
       } else if (a.node.name === 'HouseDoor') {
         console.log('House')
         // this._persistentNode.connect('house')
