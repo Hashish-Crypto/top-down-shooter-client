@@ -2,7 +2,7 @@
   "ver": "1.0.22",
   "importer": "image",
   "imported": true,
-  "uuid": "50455d4a-583a-49cb-92ff-b0ae59914d46",
+  "uuid": "9c27dacf-bf9f-40bf-b1f6-9f5b62fe3c1b",
   "files": [
     ".png",
     ".json"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "50455d4a-583a-49cb-92ff-b0ae59914d46@6c48a",
-      "displayName": "police_station_exterior",
+      "uuid": "9c27dacf-bf9f-40bf-b1f6-9f5b62fe3c1b@6c48a",
+      "displayName": "house_interior",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "50455d4a-583a-49cb-92ff-b0ae59914d46",
+        "imageUuidOrDatabaseUri": "9c27dacf-bf9f-40bf-b1f6-9f5b62fe3c1b",
         "minfilter": "nearest",
         "magfilter": "nearest",
         "mipfilter": "none",
@@ -33,8 +33,8 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "50455d4a-583a-49cb-92ff-b0ae59914d46@f9941",
-      "displayName": "police_station_exterior",
+      "uuid": "9c27dacf-bf9f-40bf-b1f6-9f5b62fe3c1b@f9941",
+      "displayName": "house_interior",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
@@ -42,20 +42,20 @@
         "trimThreshold": 1,
         "rotated": false,
         "offsetX": 0,
-        "offsetY": 3.5,
-        "trimX": 10,
-        "trimY": 0,
-        "width": 364,
-        "height": 377,
-        "rawWidth": 384,
-        "rawHeight": 384,
+        "offsetY": -4.5,
+        "trimX": 1,
+        "trimY": 9,
+        "width": 526,
+        "height": 711,
+        "rawWidth": 528,
+        "rawHeight": 720,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
         "borderRight": 0,
         "packable": true,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "50455d4a-583a-49cb-92ff-b0ae59914d46@6c48a",
+        "imageUuidOrDatabaseUri": "9c27dacf-bf9f-40bf-b1f6-9f5b62fe3c1b@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.9",
@@ -69,6 +69,6 @@
   "userData": {
     "type": "sprite-frame",
     "hasAlpha": true,
-    "redirect": "50455d4a-583a-49cb-92ff-b0ae59914d46@f9941"
+    "redirect": "9c27dacf-bf9f-40bf-b1f6-9f5b62fe3c1b@f9941"
   }
 }

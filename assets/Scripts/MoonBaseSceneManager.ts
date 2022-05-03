@@ -20,8 +20,11 @@ export class MoonBaseSceneManager extends GenericSceneManager {
   protected _onBeginContact(a: Collider2D, b: Collider2D) {
     if (b.node.uuid === this._currentPlayerUUID) {
       if (a.node.name === 'PoliceStationDoor') {
+        this._playerControllerActive = false
+        this._idleUp()
         console.log('PoliceStation')
-        // this._persistentNode.connect('policeStation')
+        this._room.send('clientRemovePlayer')
+        this._persistentNode.connect('PoliceStation')
       } else if (a.node.name === 'BarDoor') {
         this._playerControllerActive = false
         this._idleUp()
@@ -29,8 +32,11 @@ export class MoonBaseSceneManager extends GenericSceneManager {
         this._room.send('clientRemovePlayer')
         this._persistentNode.connect('Bar')
       } else if (a.node.name === 'HouseDoor') {
+        this._playerControllerActive = false
+        this._idleUp()
         console.log('House')
-        // this._persistentNode.connect('house')
+        this._room.send('clientRemovePlayer')
+        this._persistentNode.connect('House')
       }
     }
   }

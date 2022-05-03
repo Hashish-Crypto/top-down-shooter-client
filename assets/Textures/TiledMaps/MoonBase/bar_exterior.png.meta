@@ -2,7 +2,7 @@
   "ver": "1.0.22",
   "importer": "image",
   "imported": true,
-  "uuid": "fe7409a1-d05b-4d0e-af5a-2fca687cb131",
+  "uuid": "156bb995-cbfa-4ea2-a63d-a98fb89f2e4e",
   "files": [
     ".png",
     ".json"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "fe7409a1-d05b-4d0e-af5a-2fca687cb131@6c48a",
-      "displayName": "house_exterior",
+      "uuid": "156bb995-cbfa-4ea2-a63d-a98fb89f2e4e@6c48a",
+      "displayName": "bar_exterior",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "fe7409a1-d05b-4d0e-af5a-2fca687cb131",
+        "imageUuidOrDatabaseUri": "156bb995-cbfa-4ea2-a63d-a98fb89f2e4e",
         "minfilter": "nearest",
         "magfilter": "nearest",
         "mipfilter": "none",
@@ -33,29 +33,29 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "fe7409a1-d05b-4d0e-af5a-2fca687cb131@f9941",
-      "displayName": "house_exterior",
+      "uuid": "156bb995-cbfa-4ea2-a63d-a98fb89f2e4e@f9941",
+      "displayName": "bar_exterior",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
         "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
-        "offsetX": -0.5,
-        "offsetY": 4,
-        "trimX": 0,
-        "trimY": 0,
-        "width": 223,
-        "height": 392,
-        "rawWidth": 224,
-        "rawHeight": 400,
+        "offsetX": 0,
+        "offsetY": -1,
+        "trimX": 7,
+        "trimY": 3,
+        "width": 306,
+        "height": 268,
+        "rawWidth": 320,
+        "rawHeight": 272,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
         "borderRight": 0,
         "packable": true,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "fe7409a1-d05b-4d0e-af5a-2fca687cb131@6c48a",
+        "imageUuidOrDatabaseUri": "156bb995-cbfa-4ea2-a63d-a98fb89f2e4e@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.9",
@@ -69,6 +69,6 @@
   "userData": {
     "type": "sprite-frame",
     "hasAlpha": true,
-    "redirect": "fe7409a1-d05b-4d0e-af5a-2fca687cb131@f9941"
+    "redirect": "156bb995-cbfa-4ea2-a63d-a98fb89f2e4e@f9941"
   }
 }
