@@ -108,6 +108,7 @@ export class GenericSceneManager extends Component {
           const camera = instantiate(prefab)
           clientPlayer.node.addChild(camera)
           this.gameNode.getComponent(Canvas).cameraComponent = camera.getComponent(Camera)
+          this.gameNode.getComponent(Canvas).cameraComponent.orthoHeight = 160
         })
         this._joystick = this.gameUINode.getComponentInChildren(Joystick)
         this._joystickLoaded = true
