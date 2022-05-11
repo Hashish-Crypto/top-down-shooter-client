@@ -962,7 +962,7 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "serverURL": "wss://pgbe1m.colyseus.dev",
+    "serverURL": "ws://localhost:2567",
     "_id": "64EVdmbnJMMIJa/4pMY02/"
   },
   {

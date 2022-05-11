@@ -22,7 +22,6 @@ export class PoliceStationSceneManager extends GenericSceneManager {
       if (a.node.name === 'PoliceStationDoor') {
         this._playerControllerActive = false
         this._idleDown()
-        console.log('MoonBase')
         this._room.send('clientRemovePlayer')
         this._persistentNode.connect('MoonBase')
       }

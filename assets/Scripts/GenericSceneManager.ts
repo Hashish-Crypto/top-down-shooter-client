@@ -294,7 +294,9 @@ export class GenericSceneManager extends Component {
     }
   }
 
-  protected _onBeginContact(a: Collider2D, b: Collider2D) {}
+  protected _onBeginContact(a: Collider2D, b: Collider2D) {
+    console.log('_onBeginContact')
+  }
 
   private _movePlayer() {
     if (this._moveCommands.length >= 1) {

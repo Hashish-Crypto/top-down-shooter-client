@@ -22,7 +22,6 @@ export class HouseSceneManager extends GenericSceneManager {
       if (a.node.name === 'HouseDoor') {
         this._playerControllerActive = false
         this._idleDown()
-        console.log('MoonBase')
         this._room.send('clientRemovePlayer')
         this._persistentNode.connect('MoonBase')
       }

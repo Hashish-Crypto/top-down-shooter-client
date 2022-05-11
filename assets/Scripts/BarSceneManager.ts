@@ -22,7 +22,6 @@ export class BarSceneManager extends GenericSceneManager {
       if (a.node.name === 'BarDoor') {
         this._playerControllerActive = false
         this._idleDown()
-        console.log('MoonBase')
         this._room.send('clientRemovePlayer')
         this._persistentNode.connect('MoonBase')
       }

@@ -22,19 +22,16 @@ export class MoonBaseSceneManager extends GenericSceneManager {
       if (a.node.name === 'PoliceStationDoor') {
         this._playerControllerActive = false
         this._idleUp()
-        console.log('PoliceStation')
         this._room.send('clientRemovePlayer')
         this._persistentNode.connect('PoliceStation')
       } else if (a.node.name === 'BarDoor') {
         this._playerControllerActive = false
         this._idleUp()
-        console.log('Bar')
         this._room.send('clientRemovePlayer')
         this._persistentNode.connect('Bar')
       } else if (a.node.name === 'HouseDoor') {
         this._playerControllerActive = false
         this._idleUp()
-        console.log('House')
         this._room.send('clientRemovePlayer')
         this._persistentNode.connect('House')
       }
