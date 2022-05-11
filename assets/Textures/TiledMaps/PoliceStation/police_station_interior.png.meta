@@ -1,8 +1,8 @@
 {
-  "ver": "1.0.22",
+  "ver": "1.0.23",
   "importer": "image",
   "imported": true,
-  "uuid": "20365127-7913-406c-ae8a-8d066375514c",
+  "uuid": "2764683e-3721-45f2-9258-be69cd56bded",
   "files": [
     ".png",
     ".json"
@@ -10,19 +10,19 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "20365127-7913-406c-ae8a-8d066375514c@6c48a",
+      "uuid": "2764683e-3721-45f2-9258-be69cd56bded@6c48a",
       "displayName": "police_station_interior",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "20365127-7913-406c-ae8a-8d066375514c",
+        "imageUuidOrDatabaseUri": "2764683e-3721-45f2-9258-be69cd56bded",
+        "isUuid": true,
         "minfilter": "nearest",
         "magfilter": "nearest",
         "mipfilter": "none",
-        "anisotropy": 0,
-        "isUuid": true
+        "anisotropy": 0
       },
       "ver": "1.0.21",
       "imported": true,
@@ -33,7 +33,7 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "20365127-7913-406c-ae8a-8d066375514c@f9941",
+      "uuid": "2764683e-3721-45f2-9258-be69cd56bded@f9941",
       "displayName": "police_station_interior",
       "id": "f9941",
       "name": "spriteFrame",
@@ -55,7 +55,7 @@
         "borderRight": 0,
         "packable": true,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "20365127-7913-406c-ae8a-8d066375514c@6c48a",
+        "imageUuidOrDatabaseUri": "2764683e-3721-45f2-9258-be69cd56bded@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.9",
@@ -68,7 +68,8 @@
   },
   "userData": {
     "type": "sprite-frame",
+    "fixAlphaTransparencyArtifacts": true,
     "hasAlpha": true,
-    "redirect": "20365127-7913-406c-ae8a-8d066375514c@f9941"
+    "redirect": "2764683e-3721-45f2-9258-be69cd56bded@f9941"
   }
 }

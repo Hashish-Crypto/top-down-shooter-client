@@ -3,18 +3,6 @@ import { PersistentNode } from './PersistentNode'
 
 const { ccclass, property } = _decorator
 
-/**
- * Predefined variables
- * Name = LobbySceneManager
- * DateTime = Fri Apr 29 2022 19:05:40 GMT-0300 (Brasilia Standard Time)
- * Author = acquati
- * FileBasename = LobbySceneManager.ts
- * FileBasenameNoExtension = LobbySceneManager
- * URL = db://assets/Scripts/LobbySceneManager.ts
- * ManualUrl = https://docs.cocos.com/creator/3.4/manual/en/
- *
- */
-
 @ccclass('LobbySceneManager')
 export class LobbySceneManager extends Component {
   @property({ type: Node })

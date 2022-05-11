@@ -2,18 +2,6 @@ import { _decorator, Component, RigidBody2D, Vec2, CCFloat, Animation } from 'cc
 
 const { ccclass, property } = _decorator
 
-/**
- * Predefined variables
- * Name = PlayerController
- * DateTime = Sat Apr 02 2022 09:26:55 GMT-0300 (Brasilia Standard Time)
- * Author = acquati
- * FileBasename = PlayerController.ts
- * FileBasenameNoExtension = PlayerController
- * URL = db://assets/Scripts/PlayerController.ts
- * ManualUrl = https://docs.cocos.com/creator/3.4/manual/en/
- *
- */
-
 @ccclass('PlayerController')
 export class PlayerController extends Component {
   @property({ type: CCFloat })

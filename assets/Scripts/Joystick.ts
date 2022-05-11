@@ -2,18 +2,6 @@ import { _decorator, Component, Node, EventTouch, Vec3, UITransform, Size } from
 
 const { ccclass, property } = _decorator
 
-/**
- * Predefined variables
- * Name = Joystick
- * DateTime = Mon Apr 18 2022 19:33:30 GMT-0300 (Brasilia Standard Time)
- * Author = acquati
- * FileBasename = Joystick.ts
- * FileBasenameNoExtension = Joystick
- * URL = db://assets/Scripts/Joystick.ts
- * ManualUrl = https://docs.cocos.com/creator/3.4/manual/en/
- *
- */
-
 @ccclass('Joystick')
 export class Joystick extends Component {
   @property({ type: Node })
