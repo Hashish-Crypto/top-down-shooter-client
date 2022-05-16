@@ -36,18 +36,6 @@ interface IMovement {
   move: string
 }
 
-/**
- * Predefined variables
- * Name = GenericSceneManager
- * DateTime = Mon May 02 2022 21:50:22 GMT-0300 (Brasilia Standard Time)
- * Author = acquati
- * FileBasename = GenericSceneManager.ts
- * FileBasenameNoExtension = GenericSceneManager
- * URL = db://assets/Scripts/GenericSceneManager.ts
- * ManualUrl = https://docs.cocos.com/creator/3.4/manual/en/
- *
- */
-
 @ccclass('GenericSceneManager')
 export class GenericSceneManager extends Component {
   @property({ type: Node })

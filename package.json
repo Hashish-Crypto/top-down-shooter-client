@@ -2,10 +2,10 @@
   "private": true,
   "name": "top-down-shooter-client",
   "description": "Top-down shooter demonstration project using Colyseus 0.14.0 and Cocos Creator 3.4.2.",
-  "uuid": "b4853f57-69ad-452f-9be6-12d906ccd247",
-  "version": "0.1",
+  "uuid": "abbbc5f3-a4d9-46a4-9e81-624671a8df3f",
+  "version": "0.1.0",
   "creator": {
-    "version": "3.4.2"
+    "version": "3.5.0"
   },
   "license": "MIT",
   "repository": "https://github.com/Hashish-Crypto/top-down-shooter-client.git",

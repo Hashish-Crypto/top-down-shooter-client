@@ -1,8 +1,8 @@
 {
-  "ver": "1.0.22",
+  "ver": "1.0.23",
   "importer": "image",
   "imported": true,
-  "uuid": "727334a8-2408-470c-9e23-c5bd2f6ce76e",
+  "uuid": "69b952ab-66f4-4fab-a827-d0b0e56a07ff",
   "files": [
     ".png",
     ".json"
@@ -10,19 +10,19 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "727334a8-2408-470c-9e23-c5bd2f6ce76e@6c48a",
+      "uuid": "69b952ab-66f4-4fab-a827-d0b0e56a07ff@6c48a",
       "displayName": "joystick",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "727334a8-2408-470c-9e23-c5bd2f6ce76e",
+        "imageUuidOrDatabaseUri": "69b952ab-66f4-4fab-a827-d0b0e56a07ff",
+        "isUuid": true,
         "minfilter": "nearest",
         "magfilter": "nearest",
         "mipfilter": "none",
-        "anisotropy": 0,
-        "isUuid": true
+        "anisotropy": 0
       },
       "ver": "1.0.21",
       "imported": true,
@@ -33,7 +33,7 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "727334a8-2408-470c-9e23-c5bd2f6ce76e@f9941",
+      "uuid": "69b952ab-66f4-4fab-a827-d0b0e56a07ff@f9941",
       "displayName": "joystick",
       "id": "f9941",
       "name": "spriteFrame",
@@ -55,7 +55,7 @@
         "borderRight": 0,
         "packable": true,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "727334a8-2408-470c-9e23-c5bd2f6ce76e@6c48a",
+        "imageUuidOrDatabaseUri": "69b952ab-66f4-4fab-a827-d0b0e56a07ff@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.9",
@@ -68,7 +68,8 @@
   },
   "userData": {
     "type": "sprite-frame",
+    "fixAlphaTransparencyArtifacts": true,
     "hasAlpha": true,
-    "redirect": "727334a8-2408-470c-9e23-c5bd2f6ce76e@f9941"
+    "redirect": "69b952ab-66f4-4fab-a827-d0b0e56a07ff@f9941"
   }
 }

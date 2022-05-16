@@ -4,18 +4,6 @@ import { State } from './rooms/schema/State'
 
 const { ccclass, property } = _decorator
 
-/**
- * Predefined variables
- * Name = PersistentNode
- * DateTime = Sat Apr 30 2022 01:51:37 GMT-0300 (Brasilia Standard Time)
- * Author = acquati
- * FileBasename = PersistentNode.ts
- * FileBasenameNoExtension = PersistentNode
- * URL = db://assets/Scripts/PersistentNode.ts
- * ManualUrl = https://docs.cocos.com/creator/3.4/manual/en/
- *
- */
-
 @ccclass('PersistentNode')
 export class PersistentNode extends Component {
   @property
