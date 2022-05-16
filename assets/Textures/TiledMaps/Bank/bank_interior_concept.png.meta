@@ -2,7 +2,7 @@
   "ver": "1.0.23",
   "importer": "image",
   "imported": true,
-  "uuid": "5b43541b-538f-431e-9bc3-dd7493d21d08",
+  "uuid": "e7e68fda-6c60-4610-a301-911ae8f0b4e2",
   "files": [
     ".png",
     ".json"
@@ -10,17 +10,17 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "5b43541b-538f-431e-9bc3-dd7493d21d08@6c48a",
-      "displayName": "police_station_exterior_tiles",
+      "uuid": "e7e68fda-6c60-4610-a301-911ae8f0b4e2@6c48a",
+      "displayName": "bank_interior_concept",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "5b43541b-538f-431e-9bc3-dd7493d21d08",
+        "imageUuidOrDatabaseUri": "e7e68fda-6c60-4610-a301-911ae8f0b4e2",
         "isUuid": true,
-        "minfilter": "nearest",
-        "magfilter": "nearest",
+        "minfilter": "linear",
+        "magfilter": "linear",
         "mipfilter": "none",
         "anisotropy": 0
       },
@@ -33,29 +33,29 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "5b43541b-538f-431e-9bc3-dd7493d21d08@f9941",
-      "displayName": "police_station_exterior_tiles",
+      "uuid": "e7e68fda-6c60-4610-a301-911ae8f0b4e2@f9941",
+      "displayName": "bank_interior_concept",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
-        "trimType": "none",
+        "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
         "offsetX": 0,
-        "offsetY": 0,
-        "trimX": 0,
-        "trimY": 0,
-        "width": 272,
-        "height": 272,
-        "rawWidth": 272,
-        "rawHeight": 272,
+        "offsetY": 3,
+        "trimX": 57,
+        "trimY": 57,
+        "width": 398,
+        "height": 584,
+        "rawWidth": 512,
+        "rawHeight": 704,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
         "borderRight": 0,
         "packable": true,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "5b43541b-538f-431e-9bc3-dd7493d21d08@6c48a",
+        "imageUuidOrDatabaseUri": "e7e68fda-6c60-4610-a301-911ae8f0b4e2@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.9",
@@ -70,6 +70,6 @@
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": true,
     "hasAlpha": true,
-    "redirect": "5b43541b-538f-431e-9bc3-dd7493d21d08@f9941"
+    "redirect": "e7e68fda-6c60-4610-a301-911ae8f0b4e2@f9941"
   }
 }
