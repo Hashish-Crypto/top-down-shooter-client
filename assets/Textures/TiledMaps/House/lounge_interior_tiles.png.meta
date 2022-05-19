@@ -2,7 +2,7 @@
   "ver": "1.0.23",
   "importer": "image",
   "imported": true,
-  "uuid": "4c415421-9952-44b7-ac03-e4ff579a7831",
+  "uuid": "fb672090-1f67-4535-93a3-2e968e667bd2",
   "files": [
     ".png",
     ".json"
@@ -10,17 +10,17 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "4c415421-9952-44b7-ac03-e4ff579a7831@6c48a",
-      "displayName": "house_interior",
+      "uuid": "fb672090-1f67-4535-93a3-2e968e667bd2@6c48a",
+      "displayName": "lounge_interior_tiles",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "4c415421-9952-44b7-ac03-e4ff579a7831",
+        "imageUuidOrDatabaseUri": "fb672090-1f67-4535-93a3-2e968e667bd2",
         "isUuid": true,
-        "minfilter": "nearest",
-        "magfilter": "nearest",
+        "minfilter": "linear",
+        "magfilter": "linear",
         "mipfilter": "none",
         "anisotropy": 0
       },
@@ -33,29 +33,29 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "4c415421-9952-44b7-ac03-e4ff579a7831@f9941",
-      "displayName": "house_interior",
+      "uuid": "fb672090-1f67-4535-93a3-2e968e667bd2@f9941",
+      "displayName": "lounge_interior_tiles",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
-        "trimType": "none",
+        "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
         "offsetX": 0,
-        "offsetY": 0,
+        "offsetY": 18.5,
         "trimX": 0,
         "trimY": 0,
-        "width": 528,
-        "height": 720,
-        "rawWidth": 528,
-        "rawHeight": 720,
+        "width": 384,
+        "height": 347,
+        "rawWidth": 384,
+        "rawHeight": 384,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
         "borderRight": 0,
         "packable": true,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "4c415421-9952-44b7-ac03-e4ff579a7831@6c48a",
+        "imageUuidOrDatabaseUri": "fb672090-1f67-4535-93a3-2e968e667bd2@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.9",
@@ -70,6 +70,6 @@
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": true,
     "hasAlpha": true,
-    "redirect": "4c415421-9952-44b7-ac03-e4ff579a7831@f9941"
+    "redirect": "fb672090-1f67-4535-93a3-2e968e667bd2@f9941"
   }
 }
