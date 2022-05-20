@@ -17,11 +17,11 @@ export class MoonBaseSceneManager extends GenericSceneManager {
         this._idleUp()
         this._room.send('clientRemovePlayer')
         this._persistentNode.connect('Bar')
-      } else if (a.node.name === 'HouseDoor') {
+      } else if (a.node.name === 'LoungeDoor') {
         this._playerControllerActive = false
         this._idleUp()
         this._room.send('clientRemovePlayer')
-        this._persistentNode.connect('House')
+        this._persistentNode.connect('Lounge')
       }
     }
   }
