@@ -18,6 +18,7 @@ import {
   Collider2D,
 } from 'cc'
 import Colyseus from 'db://colyseus-sdk/colyseus.js'
+import { Peer, DataConnection } from 'peerjs'
 import { State } from './rooms/schema/State'
 import { PersistentNode } from './PersistentNode'
 import { Joystick } from './Joystick'
@@ -53,19 +54,27 @@ export class GenericSceneManager extends Component {
   protected _persistentNode: PersistentNode | null = null
   protected _room: Colyseus.Room<State> | null = null
   private _players: IPlayer[] = []
-  protected _playerControllerActive: boolean = true
+  protected _playerControllerEnabled: boolean = true
   protected _currentPlayerUUID: string | null = null
   private _moveCommands: string[] = []
   private _lastKeyDownMoveCommand: string
   private _joystick: Joystick | null = null
-  private _joystickLoaded: boolean = false
+  private _joystickEnabled: boolean = false
   private _joystickLastMove: string = 'idleDown'
-  private _gamepadLoaded: boolean = false
+  private _gamepadEnabled: boolean = false
   private _gamepadLastMove: string | null = null
-  private _debug: boolean = false
+  private _debugEnabled: boolean = false
+  private _peer: Peer | null = null
+  private _connectedPeersIds: string[] = []
+  private _peerCallEnabled: boolean = false
+  private _peerConnectionMap: Map<string, DataConnection> = new Map<string, DataConnection>()
+  private _queuedPeersIds: string[] = []
+  private _playerStream: MediaStream | null = null
+  private _attemptedPeersIds: string[] = []
+  private _timeoutCountMap: Map<string, number> = new Map<string, number>()
 
   onLoad() {
-    if (this._debug) {
+    if (this._debugEnabled) {
       PhysicsSystem2D.instance.debugDrawFlags =
         EPhysics2DDrawFlags.Aabb |
         EPhysics2DDrawFlags.Pair |
@@ -92,14 +101,14 @@ export class GenericSceneManager extends Component {
       const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
       clientPlayer.node.position.set(serverPlayer.xPos, serverPlayer.yPos)
       if (clientPlayer.id === this._room.sessionId) {
-        resources.load('Prefabs/Camera', Prefab, (err, prefab) => {
+        resources.load('Prefabs/Camera', Prefab, (error, prefab) => {
           const camera = instantiate(prefab)
           clientPlayer.node.addChild(camera)
           this.gameNode.getComponent(Canvas).cameraComponent = camera.getComponent(Camera)
           this.gameNode.getComponent(Canvas).cameraComponent.orthoHeight = 160
         })
         this._joystick = this.gameUINode.getComponentInChildren(Joystick)
-        this._joystickLoaded = true
+        this._joystickEnabled = true
         this._currentPlayerUUID = clientPlayer.node.uuid
       }
       clientPlayer.playerController = clientPlayer.node.getComponent(PlayerController)
@@ -151,10 +160,12 @@ export class GenericSceneManager extends Component {
         clientPlayer.playerController.idleLeft()
       }
     })
+
+    this._initializePeer()
   }
 
   update(deltaTime: number) {
-    if (this._joystickLoaded) {
+    if (this._joystickEnabled) {
       if (this._joystick.move === 'idleUp' && this._joystickLastMove !== 'idleUp') {
         this._joystickLastMove = 'idleUp'
         this._idleUp()
@@ -182,7 +193,7 @@ export class GenericSceneManager extends Component {
       }
     }
 
-    if (this._gamepadLoaded) {
+    if (this._gamepadEnabled) {
       const gamepad = navigator.getGamepads()[0]
 
       if (gamepad.buttons[12].pressed && this._gamepadLastMove !== 'moveUp') {
@@ -221,17 +232,17 @@ export class GenericSceneManager extends Component {
   }
 
   private _gamepadConnected = (event: GamepadEvent) => {
-    this._gamepadLoaded = true
+    this._gamepadEnabled = true
   }
 
   private _gamepadDisconnected = (event: GamepadEvent) => {
     if (event.gamepad.index === 0) {
-      this._gamepadLoaded = false
+      this._gamepadEnabled = false
     }
   }
 
   private _onKeyDown(event: EventKeyboard) {
-    if (this._playerControllerActive && this._playerControllerActive) {
+    if (this._playerControllerEnabled) {
       if (event.keyCode === KeyCode.KEY_W && !this._moveCommands.includes('w')) {
         this._lastKeyDownMoveCommand = 'w'
         this._moveCommands.push('w')
@@ -253,7 +264,7 @@ export class GenericSceneManager extends Component {
   }
 
   private _onKeyUp(event: EventKeyboard) {
-    if (this._playerControllerActive && this._playerControllerActive) {
+    if (this._playerControllerEnabled) {
       if (event.keyCode === KeyCode.KEY_W) {
         this._moveCommands = this._removeItem(this._moveCommands, 'w')
         if (this._moveCommands.length === 0) {
@@ -334,5 +345,212 @@ export class GenericSceneManager extends Component {
 
   private _removeItem(arr: string[], value: string) {
     return arr.filter((element) => element !== value)
+  }
+
+  private _initializePeer = () => {
+    this._connectedPeersIds = []
+
+    // this._peer = new Peer({ host: 'localhost', port: 8000, path: '/peerjs/myapp', debug: 1 })
+    const newPeer = new Peer('pick-an-id')
+    console.log(newPeer)
+
+    this._peer.on('open', () => {
+      console.log('My PeerJS ID is:', this._peer.id)
+      this._peerCallEnabled = true
+
+      this._callNextPeer()
+    })
+
+    this._peer.on('connection', (connection) => {
+      connection.on('open', () => {
+        this._peerConnectionMap.set(connection.peer, connection)
+      })
+
+      connection.on('error', (error) => {
+        console.error('Error in peer data connection.', error)
+      })
+    })
+
+    this._peer.on('close', () => {
+      console.error('Peer chat close.')
+    })
+
+    this._peer.on('disconnected', () => {
+      console.error('Peer chat disconnected.')
+      this._initializePeer()
+    })
+
+    this._peer.on('error', (error) => {
+      const FATAL_ERRORS = [
+        'invalid-id',
+        'invalid-key',
+        'network',
+        'ssl-unavailable',
+        'server-error',
+        'socket-error',
+        'socket-closed',
+        'unavailable-id',
+        'webrtc',
+      ]
+
+      if (FATAL_ERRORS.includes(error.name)) {
+        // TODO: Add increasing timeout here to avoid thrashing the browser.
+        console.error('Fatal error: ', error.name)
+        this._initializePeer()
+      } else {
+        console.log('Non fatal error: ', error.name)
+        this._callNextPeer()
+      }
+
+      // TODO: Tell the server about this error.
+    })
+
+    this._peer.on('call', (call) => {
+      try {
+        const peerId = call.peer.toString()
+        if (peerId === this._peer.id) {
+          console.warn('Cannot answer self call.')
+          return
+        }
+        console.log('Answering player ')
+
+        this._connectedPeersIds.push(peerId)
+
+        navigator.mediaDevices
+          .getUserMedia({ video: false, audio: true })
+          .then((playerStream) => {
+            this._playerStream = playerStream
+            call.answer(this._playerStream)
+
+            // if (!this.peer_volume_meter_map.get(this._peer.id)) {
+            //   this.setup_voice_activity_meter(this._peer.id, this._playerStream.clone())
+            // }
+          })
+          .catch((error) => {
+            console.error('Failed to get local stream.', error)
+          })
+
+        call.on('stream', (remoteStream) => {
+          console.log('Answered player ' + peerId)
+          // this.add_stream_to_html(peerId, remoteStream.clone())
+          // this.setup_voice_activity_meter(peerId, remoteStream.clone())
+        })
+
+        call.on('error', (error) => {
+          console.warn('Error with stream.', error)
+          const indexOfPeer = this._connectedPeersIds.indexOf(peerId)
+
+          if (indexOfPeer !== -1) this._connectedPeersIds.splice(indexOfPeer, 1)
+
+          if (this._peerCallEnabled) {
+            this._reconnectTimeout(peerId)
+          }
+        })
+      } catch (error) {
+        console.error('Error in peer.on(call)', error)
+      }
+    })
+  }
+
+  private _reconnectTimeout(peerId: string) {
+    if (this._connectedPeersIds.indexOf(peerId) !== -1) {
+      return
+    }
+    const lastTimeout = this._timeoutCountMap.get(peerId) || 3
+    this._timeoutCountMap.set(peerId, lastTimeout + 5)
+    if (lastTimeout > 30) {
+      return
+    }
+    setTimeout(() => {
+      this._callPeerById(peerId)
+    }, lastTimeout * 1000)
+  }
+
+  private _callNextPeer = () => {
+    if (this._queuedPeersIds.length <= 0) {
+      return
+    }
+
+    const _nextPeerId = this._queuedPeersIds.shift()
+    this._callPeerById(_nextPeerId)
+  }
+
+  _callPeerById(peerId: string) {
+    try {
+      if (this._connectedPeersIds.indexOf(peerId) !== -1) {
+        return
+      }
+
+      if (peerId === this._peer.id) {
+        console.warn('Cannot self call.')
+        return
+      }
+
+      console.log('Calling player ', peerId)
+      const connect = this._peer.connect(peerId, { serialization: 'none' })
+
+      connect.on('open', () => {
+        this._peerConnectionMap.set(peerId, connect)
+      })
+      connect.on('error', (error) => {
+        console.error('Error in peer data connection.', error)
+      })
+
+      const callOptions = {
+        metadata: {
+          mandatory: {
+            OfferToReceiveAudio: true,
+            OfferToReceiveVideo: false,
+          },
+          offerToReceiveAudio: 1,
+          offerToReceiveVideo: 0,
+        },
+      }
+
+      navigator.mediaDevices
+        .getUserMedia({ video: false, audio: true })
+        .then((playerStream) => {
+          this._playerStream = playerStream
+          const call = this._peer.call(peerId.toString(), this._playerStream, callOptions)
+
+          call.on('stream', (remoteStream) => {
+            if (!peerId) {
+              return
+            }
+            console.log('Received stream')
+
+            this._connectedPeersIds.push(peerId)
+
+            // this.add_stream_to_html(peerId.toString(), remoteStream.clone())
+
+            // this.setup_voice_activity_meter(peerId.toString(), remoteStream.clone())
+            this._callNextPeer()
+          })
+
+          // if (!this.peer_volume_meter_map.get(this._peer.id)) {
+          //   this.setup_voice_activity_meter(this._peer.id, this._playerStream.clone())
+          // }
+
+          this._reconnectTimeout(peerId)
+          if (this._attemptedPeersIds.indexOf(peerId) === -1) {
+            this._attemptedPeersIds.push(peerId)
+          }
+
+          call.on('error', (error) => {
+            console.warn('Error with stream.', error)
+            const indexOfPeer = this._connectedPeersIds.indexOf(peerId)
+            if (indexOfPeer !== -1) this._connectedPeersIds.splice(indexOfPeer, 1)
+
+            if (this._peerCallEnabled) {
+              this._reconnectTimeout(peerId)
+            }
+          })
+        })
+        .catch((error) => {
+          console.error('Failed to get local stream.', error)
+        })
+    } catch (error) {
+      console.error('Error in _callNextPeer.', error)
+    }
   }
 }

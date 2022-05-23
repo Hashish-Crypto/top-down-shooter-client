@@ -1,0 +1,39 @@
+peer | _peer
+
+grab_audio_on_click | _grabAudioOnClick
+
+self.audioContext | this._persistentNode.audioContext
+
+init_new_peer | _initializePeer
+
+connected_peer_ids | _connectedPeersIds
+
+_can_call | _peerCallEnabled
+
+call_next_peer | _callNextPeer
+
+peer_conn_map | _peerConnectionMap
+
+getUserMedia_ | navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+
+queued_peer_ids | _queuedPeersIds
+
+next_peer_id | _nextPeerId
+
+call_peer_with_id | _callPeerById
+
+options_call | callOptions
+
+own_stream | _playerStream
+
+index_peer | indexOfPeer
+
+attempted_peer_ids | _attemptedPeersIds
+
+reconnectTimeout | _reconnectTimeout
+
+last_timeout | lastTimeout
+
+p_peer_id | peerId
+
+timeout_count_map | _timeoutCountMap

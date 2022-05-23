@@ -12,6 +12,7 @@
   "author": "Leandro Acquati <leandroacquati@gmail.com>",
   "main": "index.js",
   "dependencies": {
+    "peerjs": "^1.4.4",
     "typescript": "^4.6.3"
   },
   "devDependencies": {

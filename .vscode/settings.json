@@ -28,7 +28,17 @@
     "local/": true,
     "temp/": true
   },
-  "cSpell.words": ["Aabb", "acquati", "ccclass", "Colyseus", "gamepadconnected", "gamepaddisconnected", "interactable"],
+  "cSpell.words": [
+    "Aabb",
+    "acquati",
+    "ccclass",
+    "Colyseus",
+    "gamepadconnected",
+    "gamepaddisconnected",
+    "interactable",
+    "peerjs",
+    "webrtc"
+  ],
   "editor.foldingMaximumRegions": 50000,
   "files.eol": "\n"
 }

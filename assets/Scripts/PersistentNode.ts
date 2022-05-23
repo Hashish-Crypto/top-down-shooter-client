@@ -11,9 +11,13 @@ export class PersistentNode extends Component {
 
   private _client: Colyseus.Client | null = null
   private _room: Colyseus.Room<State> | null = null
+  public audioContext: AudioContext | null = null
 
   onLoad() {
     game.addPersistRootNode(this.node)
+
+    this.audioContext = new AudioContext()
+    document.body.addEventListener('click', this._grabAudioOnClick)
   }
 
   private async _timeout(ms: number) {
@@ -42,5 +46,13 @@ export class PersistentNode extends Component {
 
   getClient() {
     return this._client
+  }
+
+  private _grabAudioOnClick = (event: MouseEvent) => {
+    if ((this.audioContext && this.audioContext.state === 'suspended') || this.audioContext.state === 'closed') {
+      this.audioContext.resume()
+    } else {
+      document.body.removeEventListener('click', this._grabAudioOnClick)
+    }
   }
 }
