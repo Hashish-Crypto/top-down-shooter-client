@@ -351,8 +351,9 @@ export class GenericSceneManager extends Component {
     this._connectedPeersIds = []
 
     // this._peer = new Peer({ host: 'localhost', port: 8000, path: '/peerjs/myapp', debug: 1 })
-    const newPeer = new Peer('pick-an-id')
-    console.log(newPeer)
+    // console.log(new window.peerjs.Peer() as Peer)
+    this._peer = new window.peerjs.Peer() as Peer
+    // this._peer = new Peer({ host: 'localhost', port: 8000, path: '/peerjs/myapp', debug: 1 })
 
     this._peer.on('open', () => {
       console.log('My PeerJS ID is:', this._peer.id)
