@@ -31,8 +31,8 @@ export class PersistentNode extends Component {
 
     try {
       this._room = await this._client.joinOrCreate(roomName)
-    } catch (err) {
-      console.log('Client can not join or create ' + roomName + ' room.', err)
+    } catch (error) {
+      console.log('Client can not join or create ' + roomName + ' room.', error)
     }
 
     await this._timeout(800)

@@ -37,3 +37,22 @@ last_timeout | lastTimeout
 p_peer_id | peerId
 
 timeout_count_map | _timeoutCountMap
+
+_audioContext | audioContext
+
+setup_voice_activity_meter | _setupVoiceActivityMeter
+
+peer_volume_meter_map | _peerVolumeMeterMap
+
+add_stream_to_html | _addStreamToHtml
+
+media_container | mediaContainer
+
+split_media_stream | 
+
+panNode | pannerNode
+
+p_stream | stream
+p_peer_id | peerId
+
+media_pan_map | _mediaPannerMap

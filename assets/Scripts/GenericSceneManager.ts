@@ -23,6 +23,7 @@ import { State } from './rooms/schema/State'
 import { PersistentNode } from './PersistentNode'
 import { Joystick } from './Joystick'
 import { PlayerController } from './PlayerController'
+import createAudioMeter from './lib/createAudioMeter'
 
 const { ccclass, property } = _decorator
 
@@ -72,6 +73,8 @@ export class GenericSceneManager extends Component {
   private _playerStream: MediaStream | null = null
   private _attemptedPeersIds: string[] = []
   private _timeoutCountMap: Map<string, number> = new Map<string, number>()
+  private _peerVolumeMeterMap: Map<string, ScriptProcessorNode> = new Map<string, ScriptProcessorNode>()
+  private _mediaPannerMap: Map<string, StereoPannerNode> = new Map<string, StereoPannerNode>()
 
   onLoad() {
     if (this._debugEnabled) {
@@ -350,10 +353,9 @@ export class GenericSceneManager extends Component {
   private _initializePeer = () => {
     this._connectedPeersIds = []
 
-    // this._peer = new Peer({ host: 'localhost', port: 8000, path: '/peerjs/myapp', debug: 1 })
-    // console.log(new window.peerjs.Peer() as Peer)
+    // @ts-ignore
     this._peer = new window.peerjs.Peer() as Peer
-    // this._peer = new Peer({ host: 'localhost', port: 8000, path: '/peerjs/myapp', debug: 1 })
+    // this._peer = new window.peerjs.Peer({ host: 'localhost', port: 8000, path: '/peerjs/myapp', debug: 1 }) as Peer
 
     this._peer.on('open', () => {
       console.log('My PeerJS ID is:', this._peer.id)
@@ -423,9 +425,9 @@ export class GenericSceneManager extends Component {
             this._playerStream = playerStream
             call.answer(this._playerStream)
 
-            // if (!this.peer_volume_meter_map.get(this._peer.id)) {
-            //   this.setup_voice_activity_meter(this._peer.id, this._playerStream.clone())
-            // }
+            if (!this._peerVolumeMeterMap.get(this._peer.id)) {
+              this._setupVoiceActivityMeter(this._peer.id, this._playerStream.clone())
+            }
           })
           .catch((error) => {
             console.error('Failed to get local stream.', error)
@@ -433,8 +435,8 @@ export class GenericSceneManager extends Component {
 
         call.on('stream', (remoteStream) => {
           console.log('Answered player ' + peerId)
-          // this.add_stream_to_html(peerId, remoteStream.clone())
-          // this.setup_voice_activity_meter(peerId, remoteStream.clone())
+          this._addStreamToHtml(peerId, remoteStream.clone())
+          this._setupVoiceActivityMeter(peerId, remoteStream.clone())
         })
 
         call.on('error', (error) => {
@@ -476,7 +478,7 @@ export class GenericSceneManager extends Component {
     this._callPeerById(_nextPeerId)
   }
 
-  _callPeerById(peerId: string) {
+  private _callPeerById(peerId: string) {
     try {
       if (this._connectedPeersIds.indexOf(peerId) !== -1) {
         return
@@ -522,15 +524,15 @@ export class GenericSceneManager extends Component {
 
             this._connectedPeersIds.push(peerId)
 
-            // this.add_stream_to_html(peerId.toString(), remoteStream.clone())
+            this._addStreamToHtml(peerId.toString(), remoteStream.clone())
 
-            // this.setup_voice_activity_meter(peerId.toString(), remoteStream.clone())
+            this._setupVoiceActivityMeter(peerId.toString(), remoteStream.clone())
             this._callNextPeer()
           })
 
-          // if (!this.peer_volume_meter_map.get(this._peer.id)) {
-          //   this.setup_voice_activity_meter(this._peer.id, this._playerStream.clone())
-          // }
+          if (!this._peerVolumeMeterMap.get(this._peer.id)) {
+            this._setupVoiceActivityMeter(this._peer.id, this._playerStream.clone())
+          }
 
           this._reconnectTimeout(peerId)
           if (this._attemptedPeersIds.indexOf(peerId) === -1) {
@@ -552,6 +554,70 @@ export class GenericSceneManager extends Component {
         })
     } catch (error) {
       console.error('Error in _callNextPeer.', error)
+    }
+  }
+
+  private _setupVoiceActivityMeter(peerId: string, stream: MediaStream) {
+    // Create an AudioNode from the stream.
+    const mediaStreamSource = this._persistentNode.audioContext.createMediaStreamSource(stream)
+    // Create a new volume meter and connect it.
+    const meter = createAudioMeter(this._persistentNode.audioContext)
+    mediaStreamSource.connect(meter)
+    this._peerVolumeMeterMap.set(peerId, meter)
+  }
+
+  private _addStreamToHtml(peerId: string, remoteStream: MediaStream) {
+    const splitStream = this._splitMediaStream(peerId, remoteStream)
+    const mediaContainer = document.getElementById('media-container')
+    let remoteVideo = document.getElementById('p' + peerId) as HTMLAudioElement
+    let volumeControl = document.getElementById('v' + peerId) as HTMLAudioElement
+
+    if (remoteVideo === null) {
+      remoteVideo = document.createElement('audio')
+      remoteVideo.id = 'p' + peerId
+      remoteVideo.srcObject = remoteStream
+      remoteVideo.autoplay = true
+      remoteVideo.volume = 0
+      remoteVideo.play()
+      mediaContainer.appendChild(remoteVideo)
+    } else {
+      remoteVideo.srcObject = remoteStream
+      remoteVideo.autoplay = true
+      remoteVideo.volume = 0
+      remoteVideo.play()
+    }
+
+    if (volumeControl === null) {
+      volumeControl = document.createElement('audio')
+      volumeControl.id = 'v' + peerId
+      volumeControl.srcObject = splitStream
+      volumeControl.autoplay = true
+      volumeControl.volume = 1
+      volumeControl.play()
+      mediaContainer.appendChild(volumeControl)
+    } else {
+      volumeControl.srcObject = splitStream
+      volumeControl.autoplay = true
+      volumeControl.volume = 1
+      volumeControl.play()
+    }
+  }
+
+  private _splitMediaStream(peerId: string, stream: MediaStream) {
+    try {
+      const mediaStreamSource = this._persistentNode.audioContext.createMediaStreamSource(stream)
+      const pannerNode = this._persistentNode.audioContext.createStereoPanner()
+      const destination = this._persistentNode.audioContext.createMediaStreamDestination()
+
+      mediaStreamSource.connect(pannerNode)
+      pannerNode.connect(destination)
+
+      this._mediaPannerMap.set(peerId, pannerNode)
+
+      return destination.stream
+    } catch (error) {
+      console.warn('Could not split media stream.', error)
+      return stream
     }
   }
 }
