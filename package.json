@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "top-down-shooter-client",
-  "description": "Top-down shooter demonstration project using Colyseus 0.14.0 and Cocos Creator 3.4.2.",
+  "description": "Top-down shooter demonstration project using Colyseus 0.14.0 and Cocos Creator 3.5.0.",
   "uuid": "abbbc5f3-a4d9-46a4-9e81-624671a8df3f",
   "version": "0.1.0",
   "creator": {
@@ -11,10 +11,8 @@
   "repository": "https://github.com/Hashish-Crypto/top-down-shooter-client.git",
   "author": "Leandro Acquati <leandroacquati@gmail.com>",
   "main": "index.js",
-  "dependencies": {
-    "typescript": "^4.6.3"
-  },
   "devDependencies": {
+    "typescript": "^4.6.3",
     "@babel/core": "^7.17.8",
     "@babel/eslint-parser": "^7.17.0",
     "@colyseus/schema": "^1.0.34",
