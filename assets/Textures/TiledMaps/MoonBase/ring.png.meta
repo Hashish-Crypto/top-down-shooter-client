@@ -2,7 +2,7 @@
   "ver": "1.0.23",
   "importer": "image",
   "imported": true,
-  "uuid": "c7dc8f2b-b919-4583-8b99-444145b8b2ba",
+  "uuid": "434cd717-9101-42a5-ad4a-17251f0ed668",
   "files": [
     ".png",
     ".json"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "c7dc8f2b-b919-4583-8b99-444145b8b2ba@6c48a",
-      "displayName": "bank_exterior",
+      "uuid": "434cd717-9101-42a5-ad4a-17251f0ed668@6c48a",
+      "displayName": "ring",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "c7dc8f2b-b919-4583-8b99-444145b8b2ba",
+        "imageUuidOrDatabaseUri": "434cd717-9101-42a5-ad4a-17251f0ed668",
         "isUuid": true,
         "minfilter": "nearest",
         "magfilter": "nearest",
@@ -33,29 +33,29 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "c7dc8f2b-b919-4583-8b99-444145b8b2ba@f9941",
-      "displayName": "bank_exterior",
+      "uuid": "434cd717-9101-42a5-ad4a-17251f0ed668@f9941",
+      "displayName": "ring",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
-        "trimType": "none",
+        "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
         "offsetX": 0,
         "offsetY": 0,
         "trimX": 0,
         "trimY": 0,
-        "width": 144,
-        "height": 256,
-        "rawWidth": 144,
-        "rawHeight": 256,
+        "width": 128,
+        "height": 128,
+        "rawWidth": 128,
+        "rawHeight": 128,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
         "borderRight": 0,
         "packable": true,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "c7dc8f2b-b919-4583-8b99-444145b8b2ba@6c48a",
+        "imageUuidOrDatabaseUri": "434cd717-9101-42a5-ad4a-17251f0ed668@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.9",
@@ -70,6 +70,6 @@
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": true,
     "hasAlpha": true,
-    "redirect": "c7dc8f2b-b919-4583-8b99-444145b8b2ba@f9941"
+    "redirect": "434cd717-9101-42a5-ad4a-17251f0ed668@f9941"
   }
 }
