@@ -4,6 +4,7 @@
 
   /* Add your custom configuration here. */
   "compilerOptions": {
+    "target": "es2022",
     "strict": false,
     "esModuleInterop": true
   }
