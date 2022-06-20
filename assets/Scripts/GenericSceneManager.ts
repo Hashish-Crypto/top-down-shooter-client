@@ -92,7 +92,7 @@ export class GenericSceneManager extends Component {
       const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
       clientPlayer.node.position.set(serverPlayer.xPos, serverPlayer.yPos)
       if (clientPlayer.id === this._room.sessionId) {
-        resources.load('Prefabs/Camera', Prefab, (err, prefab) => {
+        resources.load('Prefabs/Camera', Prefab, (error, prefab) => {
           const camera = instantiate(prefab)
           clientPlayer.node.addChild(camera)
           this.gameNode.getComponent(Canvas).cameraComponent = camera.getComponent(Camera)

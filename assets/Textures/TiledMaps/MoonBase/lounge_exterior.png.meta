@@ -11,7 +11,7 @@
     "6c48a": {
       "importer": "texture",
       "uuid": "a2961fc1-497b-40fd-9360-ed9ee41a33d2@6c48a",
-      "displayName": "house_exterior",
+      "displayName": "lounge_exterior",
       "id": "6c48a",
       "name": "texture",
       "userData": {
@@ -34,7 +34,7 @@
     "f9941": {
       "importer": "sprite-frame",
       "uuid": "a2961fc1-497b-40fd-9360-ed9ee41a33d2@f9941",
-      "displayName": "house_exterior",
+      "displayName": "lounge_exterior",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
