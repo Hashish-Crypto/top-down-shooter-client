@@ -92,7 +92,7 @@ export class GenericSceneManager extends Component {
       const clientPlayer = this._players.find((player) => player.id === serverPlayer.id)
       clientPlayer.node.position.set(serverPlayer.xPos, serverPlayer.yPos)
       if (clientPlayer.id === this._room.sessionId) {
-        resources.load('Prefabs/Camera', Prefab, (err, prefab) => {
+        resources.load('Prefabs/Camera', Prefab, (error, prefab) => {
           const camera = instantiate(prefab)
           clientPlayer.node.addChild(camera)
           this.gameNode.getComponent(Canvas).cameraComponent = camera.getComponent(Camera)
@@ -231,7 +231,7 @@ export class GenericSceneManager extends Component {
   }
 
   private _onKeyDown(event: EventKeyboard) {
-    if (this._playerControllerActive && this._playerControllerActive) {
+    if (this._playerControllerActive) {
       if (event.keyCode === KeyCode.KEY_W && !this._moveCommands.includes('w')) {
         this._lastKeyDownMoveCommand = 'w'
         this._moveCommands.push('w')
@@ -253,7 +253,7 @@ export class GenericSceneManager extends Component {
   }
 
   private _onKeyUp(event: EventKeyboard) {
-    if (this._playerControllerActive && this._playerControllerActive) {
+    if (this._playerControllerActive) {
       if (event.keyCode === KeyCode.KEY_W) {
         this._moveCommands = this._removeItem(this._moveCommands, 'w')
         if (this._moveCommands.length === 0) {
@@ -272,7 +272,7 @@ export class GenericSceneManager extends Component {
       } else if (event.keyCode === KeyCode.KEY_A) {
         this._moveCommands = this._removeItem(this._moveCommands, 'a')
         if (this._moveCommands.length === 0) {
-          this._room.send('clientMovePlayer', { id: this._room.sessionId, move: 'idleLeft' })
+          this._idleLeft()
         }
       }
 

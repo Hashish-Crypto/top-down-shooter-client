@@ -2,7 +2,7 @@
   "ver": "1.0.23",
   "importer": "image",
   "imported": true,
-  "uuid": "8ffbb4ac-bfc5-455e-ac9f-d65209998969",
+  "uuid": "0865ab66-4521-4166-8fe8-92e85b42dbd4",
   "files": [
     ".png",
     ".json"
@@ -10,17 +10,17 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "8ffbb4ac-bfc5-455e-ac9f-d65209998969@6c48a",
-      "displayName": "shop_exterior",
+      "uuid": "0865ab66-4521-4166-8fe8-92e85b42dbd4@6c48a",
+      "displayName": "man1_torso_b_3",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "8ffbb4ac-bfc5-455e-ac9f-d65209998969",
+        "imageUuidOrDatabaseUri": "0865ab66-4521-4166-8fe8-92e85b42dbd4",
         "isUuid": true,
-        "minfilter": "nearest",
-        "magfilter": "nearest",
+        "minfilter": "linear",
+        "magfilter": "linear",
         "mipfilter": "none",
         "anisotropy": 0
       },
@@ -33,29 +33,29 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "8ffbb4ac-bfc5-455e-ac9f-d65209998969@f9941",
-      "displayName": "shop_exterior",
+      "uuid": "0865ab66-4521-4166-8fe8-92e85b42dbd4@f9941",
+      "displayName": "man1_torso_b_3",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
-        "trimType": "none",
+        "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
-        "offsetX": 0,
-        "offsetY": 0,
-        "trimX": 0,
-        "trimY": 0,
-        "width": 160,
-        "height": 288,
-        "rawWidth": 160,
-        "rawHeight": 288,
+        "offsetX": 0.5,
+        "offsetY": -6,
+        "trimX": 5,
+        "trimY": 17,
+        "width": 23,
+        "height": 10,
+        "rawWidth": 32,
+        "rawHeight": 32,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
         "borderRight": 0,
         "packable": true,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "8ffbb4ac-bfc5-455e-ac9f-d65209998969@6c48a",
+        "imageUuidOrDatabaseUri": "0865ab66-4521-4166-8fe8-92e85b42dbd4@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.9",
@@ -70,6 +70,6 @@
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": true,
     "hasAlpha": true,
-    "redirect": "8ffbb4ac-bfc5-455e-ac9f-d65209998969@f9941"
+    "redirect": "0865ab66-4521-4166-8fe8-92e85b42dbd4@f9941"
   }
 }
